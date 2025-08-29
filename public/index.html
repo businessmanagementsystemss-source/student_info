@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Login/Register Card -->
+<div class="card">
+
+  <!-- Login Form -->
+  <div id="loginPage">
+    <h2>Login</h2>
+    <label for="loginReg">Registration Number</label>
+    <input type="text" id="loginReg" placeholder="Enter Reg No">
+
+    <label for="loginPass">Password</label>
+    <div class="input-group">
+      <input type="password" id="loginPass" placeholder="Enter Password">
+      <span class="toggle-icon" onclick="togglePassword('loginPass', this)">👁️</span>
+    </div>
+
+    <button onclick="login()">Login</button>
+    <div class="link" onclick="showPage('registerPage')">Not registered? Click here</div>
+  </div>
+
+  <!-- Registration Form -->
+  <div id="registerPage" class="hidden">
+    <h2>Register</h2>
+
+    <label>Full Name</label>
+    <input type="text" id="fullName">
+
+    <label>Registration Number</label>
+    <input type="text" id="regNumber">
+
+    <label>Email</label>
+    <input type="email" id="email">
+
+    <label>Phone Number</label>
+    <input type="tel" id="phone">
+
+    <label>Gender</label>
+    <select id="gender">
+      <option value="">Choose...</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+    </select>
+
+    <label>Date of Birth</label>
+    <input type="date" id="dob">
+
+    <label>Create Password</label>
+    <div class="input-group">
+      <input type="password" id="password">
+      <span class="toggle-icon" onclick="togglePassword('password', this)">👁️</span>
+    </div>
+
+    <label>Repeat Password</label>
+    <div class="input-group">
+      <input type="password" id="repeatPassword">
+      <span class="toggle-icon" onclick="togglePassword('repeatPassword', this)">👁️</span>
+    </div>
+
+    <button onclick="register()">Submit</button>
+    <div class="link" onclick="showPage('loginPage')">Already have an account? Click here</div>
+  </div>
+
+</div>
+
+<!-- Dashboard Page -->
+<div class="card hidden" id="dashboardPage">
+
+  <!-- Ads Carousel -->
+  <div class="carousel" id="adsCarousel"></div>
+
+  <!-- Results Card -->
+  <div class="card">
+    <h3>Results</h3>
+    <p>Here you will see examination results</p>
+    <button onclick="openResults()">Open Results</button>
+  </div>
+
+  <!-- Learning Portal Card -->
+  <div class="card">
+    <h3>Learning Portal</h3>
+    <p>Here you will find notes</p>
+    <button onclick="alert('Under development')">Open</button>
+  </div>
+
+</div>
+
+<!-- Fullpage Overlay -->
+<div id="fullPage" class="fullpage">
+  <div id="fullContent"></div>
+  <button class="back" onclick="closeFullPage()">Back</button>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
