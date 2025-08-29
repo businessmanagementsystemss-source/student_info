@@ -17,9 +17,16 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public'))); // serve front-end
 
 // -------------------------
-// 3️⃣ Firebase Admin SDK
+// 3️⃣ Firebase Admin SDK (use env variable instead of file)
 // -------------------------
-const serviceAccount = require('./serviceAccountKey.json');
+let serviceAccount;
+try {
+  serviceAccount = JSON.parse(process.env.FIREBASE_KEY_JSON);
+} catch (err) {
+  console.error("❌ Missing or invalid FIREBASE_KEY_JSON env variable");
+  process.exit(1);
+}
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://student-portal-8e8d3-default-rtdb.firebaseio.com"
@@ -88,7 +95,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // -------------------------
-// 8️⃣ Get student results (use query string ?reg=NS2018/11819/2018)
+// 8️⃣ Get student results
 // -------------------------
 app.get('/api/results', async (req, res) => {
   const reg = req.query.reg;
@@ -150,7 +157,7 @@ app.get('/api/ads', async (req, res) => {
 });
 
 // -------------------------
-// 🔟 Start server
+// 🔟 Start server (use Render port)
 // -------------------------
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
