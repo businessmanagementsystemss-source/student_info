@@ -144,28 +144,32 @@ window.onpopstate = function(event) {
 // -------------------------
 // Ads carousel
 // -------------------------
-let adsImages = [],
-    currentAd = 0;
-
 async function loadAds() {
     try {
         const res = await fetch('/api/ads');
         const data = await res.json();
         
-        console.log("Ads data received:", data); // Log the full data object
+        console.log("Ads data received:", data);
 
         if (data.success) {
-            adsImages = data.ads;
+            const adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
             carousel.innerHTML = ''; // Clear previous ads
-
-            adsImages.forEach((ad, i) => {
+            
+            // 💡 The change: display all cards at once for testing
+            carousel.style.display = 'flex';
+            carousel.style.gap = '10px';
+            carousel.style.overflowX = 'auto'; // Make it scrollable if needed
+            
+            adsImages.forEach(ad => {
                 const img = document.createElement('img');
                 img.src = ad.image;
-                img.alt = ad.title; // Add alt text for accessibility
-                img.style.opacity = i === 0 ? 1 : 0; // Initially highlight the first image
+                img.alt = ad.title; 
+                img.style.width = '250px'; // Set a fixed width for each image
+                img.style.height = '150px';
+                img.style.objectFit = 'cover';
+                img.style.cursor = 'pointer';
 
-                // The fix: Use a proper event listener with a closure
                 img.addEventListener('click', () => {
                     console.log(`Clicked on ad: ${ad.title}`);
                     showAd(ad.html, ad.title);
@@ -173,27 +177,15 @@ async function loadAds() {
 
                 carousel.appendChild(img);
             });
-
-            // Optional: Cycle through ads every 10 seconds
-            if (adsImages.length > 1) {
-                setInterval(nextAd, 10000);
-            }
         }
     } catch (e) {
         console.error("Error loading ads:", e);
     }
 }
 
-// Function to cycle ads in the carousel
-function nextAd() {
-    if (adsImages.length < 2) return;
-    const imgs = document.querySelectorAll("#adsCarousel img");
-    imgs[currentAd].style.opacity = 0;
-    currentAd = (currentAd + 1) % adsImages.length;
-    imgs[currentAd].style.opacity = 1;
-}
-
-// Function to display the content for the clicked ad
+// The following functions are no longer needed for this test
+// but are kept here to avoid errors. You can remove them later.
+function nextAd() {}
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
 
