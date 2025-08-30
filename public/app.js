@@ -189,12 +189,17 @@ function nextAd() {
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
 
-    // Parse the HTML content to extract only the body content
-    const div = document.createElement('div');
-    div.innerHTML = html;  // Inject the raw HTML into a temporary container
-    const bodyContent = div.querySelector('body').innerHTML;  // Extract only the body content
+    // Clear the previous content
+    fullContent.innerHTML = '';
 
-    // Now set the body content as the inner HTML of the full content
+    // Create a temporary div to hold the raw HTML and extract content
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;  // Inject the raw HTML into the temporary container
+
+    // Extract the body content from the ad HTML
+    const bodyContent = tempDiv.querySelector('body').innerHTML;
+
+    // Now insert the extracted body content into the full content container
     fullContent.innerHTML = bodyContent; 
 
     // Show the full-page overlay
