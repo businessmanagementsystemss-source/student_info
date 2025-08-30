@@ -16,7 +16,7 @@ body {
 /* Main container that adapts to screen */
 .container {
   width: 100%;
-  max-width: 1200px; /* Full width on big screens */
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -26,29 +26,31 @@ body {
   background: white;
   padding: 20px;
   margin: 20px auto;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 20px; /* increased radius like HP style */
+  box-shadow: 0 10px 30px rgba(0,0,0,.15); /* HP-style shadow */
   width: 100%;
   max-width: 400px;
   margin-bottom: 20px;
-  transition: 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 .auth-card:hover {
   transform: scale(1.02);
+  box-shadow: 0 15px 40px rgba(0,0,0,.25);
 }
 
-/* Generic Card (used inside dashboard) */
+/* Generic Card (Dashboard) */
 .card {
   background: white;
   padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 20px; /* match HP-style */
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
   margin-bottom: 20px;
   width: 100%;
-  transition: 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 .card:hover {
   transform: scale(1.02);
+  box-shadow: 0 15px 40px rgba(0,0,0,.25);
 }
 
 /* Dashboard layout */
@@ -83,25 +85,27 @@ input, select, button, textarea {
   width: 100%;
   padding: 10px;
   margin-top: 5px;
-  border-radius: 8px;
+  border-radius: 12px; /* slightly larger for HP style */
   border: 1px solid #ccc;
   box-sizing: border-box;
   font-size: 14px;
 }
 
 button {
-  background: #0ea5e9;
+  background: linear-gradient(90deg,#3b82f6,#22c55e); /* HP-style gradient */
   color: white;
   border: none;
   cursor: pointer;
   margin-top: 20px;
   font-size: 16px;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 10px;
+  font-weight: 600;
+  transition: 0.3s;
 }
 
 button:hover {
-  background: #0284c7;
+  background: linear-gradient(90deg,#22c55e,#3b82f6);
 }
 
 /* Utility / links */
@@ -134,11 +138,12 @@ button:hover {
 /* Dashboard carousel */
 .carousel {
   position: relative;
-  height: 300px; /* bigger for laptop */
+  height: 300px;
   margin-bottom: 20px;
   overflow: hidden;
-  border-radius: 12px;
-  background: #e6eef6; /* subtle fallback while images load */
+  border-radius: 20px;
+  background: #e6eef6;
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
 }
 
 .carousel img {
@@ -167,19 +172,52 @@ button:hover {
 }
 
 .fullpage button.back {
-  margin-bottom: 20px;
-  background: #555;
+  display: none; /* removed back button on result page */
+}
+
+/* Table inside fullpage results */
+.fullpage table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.fullpage th, .fullpage td {
+  border: 1px solid #e5e7eb;
+  padding: 10px;
+  text-align: center;
+}
+
+.fullpage th {
+  background: #0ea5e9;
   color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 15px;
-  cursor: pointer;
+  font-weight: 600;
+}
+
+.summary {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.summary div:last-child {
+  color: #0ea5e9;
+}
+
+.note {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 8px;
+  text-align: center;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .carousel {
-    height: 200px; /* smaller for tablets */
+    height: 200px;
   }
   .dashboard {
     padding: 15px;
@@ -194,7 +232,7 @@ button:hover {
     padding: 15px;
   }
   .carousel {
-    height: 150px; /* smaller for phones */
+    height: 150px;
   }
   .auth-card {
     max-width: 100%;
