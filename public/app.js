@@ -189,11 +189,13 @@ function nextAd() {
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
 
-    // Clean up the ad's HTML by removing unnecessary <html>, <head>, and <body> tags
-    const sanitizedHtml = html.replace(/<\/?html.*?>/g, '').replace(/<\/?body.*?>/g, '').replace(/<\/?head.*?>/g, '');
+    // Parse the HTML content to extract only the body content
+    const div = document.createElement('div');
+    div.innerHTML = html;  // Inject the raw HTML into a temporary container
+    const bodyContent = div.querySelector('body').innerHTML;  // Extract only the body content
 
-    // Now set the sanitized HTML content
-    fullContent.innerHTML = sanitizedHtml; 
+    // Now set the body content as the inner HTML of the full content
+    fullContent.innerHTML = bodyContent; 
 
     // Show the full-page overlay
     const fullPage = document.getElementById("fullPage");
