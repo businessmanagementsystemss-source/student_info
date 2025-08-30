@@ -158,16 +158,17 @@ async function loadAds() {
             const carousel = document.getElementById("adsCarousel");
             carousel.innerHTML = '';
             
-            // Create a new inner container for the sliding effect
             const carouselInner = document.createElement('div');
             carouselInner.style.display = 'flex';
             carouselInner.style.transition = 'transform 0.5s ease-in-out';
-
+            carouselInner.style.width = `${ads.length * 100}%`;
+            carouselInner.style.height = '100%';
+            
             ads.forEach((ad, i) => {
                 const img = document.createElement('img');
                 img.src = ad.image;
                 img.alt = ad.title;
-                img.style.minWidth = '100%';
+                img.style.width = `${100 / ads.length}%`; // Each image takes up its percentage of the inner container
                 img.style.height = '100%';
                 img.style.objectFit = 'cover';
                 img.style.cursor = 'pointer';
@@ -179,54 +180,46 @@ async function loadAds() {
                 carouselInner.appendChild(img);
             });
             
-            carousel.appendChild(carouselInner);
-
-            // Create a navigation container to hold the buttons
-            const navContainer = document.createElement('div');
-            navContainer.style.position = 'absolute';
-            navContainer.style.top = '50%';
-            navContainer.style.transform = 'translateY(-50%)';
-            navContainer.style.width = '100%';
-            navContainer.style.display = 'flex';
-            navContainer.style.justifyContent = 'space-between';
-            navContainer.style.padding = '0 10px';
-            navContainer.style.boxSizing = 'border-box'; // Ensure padding is included in width
-
-            // Create Previous and Next buttons
-            const prevBtn = document.createElement('button');
-            prevBtn.textContent = '<';
-            prevBtn.onclick = () => moveCarousel(-1);
-
-            const nextBtn = document.createElement('button');
-            nextBtn.textContent = '>';
-            nextBtn.onclick = () => moveCarousel(1);
-            
-            // Style the buttons
-            const btnStyle = `
-                background-color: rgba(0,0,0,0.5);
-                color: white;
-                border: none;
-                font-size: 24px;
-                cursor: pointer;
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            `;
-            prevBtn.style.cssText = btnStyle;
-            nextBtn.style.cssText = btnStyle;
-
-            navContainer.appendChild(prevBtn);
-            navContainer.appendChild(nextBtn);
-
             carousel.style.position = 'relative';
             carousel.style.overflow = 'hidden';
-            carousel.style.height = '200px';
-            carousel.appendChild(navContainer);
+            carousel.style.height = '200px'; 
+            carousel.appendChild(carouselInner);
 
             if (ads.length > 1) {
+                // Create and style navigation buttons
+                const prevBtn = document.createElement('button');
+                prevBtn.textContent = '<';
+                prevBtn.addEventListener('click', () => moveCarousel(-1));
+                
+                const nextBtn = document.createElement('button');
+                nextBtn.textContent = '>';
+                nextBtn.addEventListener('click', () => moveCarousel(1));
+
+                const btnStyle = `
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background-color: rgba(0,0,0,0.5);
+                    color: white;
+                    border: none;
+                    font-size: 24px;
+                    cursor: pointer;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10;
+                `;
+                prevBtn.style.cssText = btnStyle + 'left: 10px;';
+                nextBtn.style.cssText = btnStyle + 'right: 10px;';
+
+                carousel.appendChild(prevBtn);
+                carousel.appendChild(nextBtn);
+
+                // Start auto-play
+                clearInterval(carouselInterval);
                 carouselInterval = setInterval(() => moveCarousel(1), 5000);
             }
 
@@ -239,6 +232,9 @@ async function loadAds() {
 function moveCarousel(direction) {
     const carouselInner = document.querySelector("#adsCarousel > div");
     if (!carouselInner) return;
+
+    // Check if ads array is not empty before moving
+    if (ads.length === 0) return;
 
     currentIndex = (currentIndex + direction + ads.length) % ads.length;
     carouselInner.style.transform = `translateX(-${currentIndex * 100}%)`;
