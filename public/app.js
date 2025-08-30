@@ -154,7 +154,12 @@ async function loadAds() {
                 const img = document.createElement('img');
                 img.src = ad.image;
                 img.style.opacity = i === 0 ? 1 : 0;
-                img.onclick = () => { showAd(ad.html, ad.title); };  // Ensure we pass the unique ad content
+
+                // Ensure the correct 'html' content is passed when the image is clicked
+                img.onclick = function() {
+                    showAd(ad.html, ad.title); // Dynamically pass each ad's content
+                };
+
                 carousel.appendChild(img);
             });
 
@@ -176,24 +181,20 @@ function nextAd() {
 }
 
 function showAd(html, title) {
-    // Ensure we correctly update the content of #fullContent with the unique HTML
+    // Ensure we are passing the correct HTML content for each ad
     const fullContent = document.getElementById("fullContent");
 
-    // Check if the HTML is being passed correctly
-    console.log("Ad HTML content: ", html); // Debug log to ensure we get the right HTML
+    // Debug: Check which HTML content is being passed
+    console.log("Ad HTML content: ", html); // Make sure this is correct for each ad
 
     if (fullContent) {
-        fullContent.innerHTML = html;  // Set the HTML of the clicked ad
-    } else {
-        console.error("Could not find #fullContent element");
+        fullContent.innerHTML = html;  // Set the HTML content of the clicked ad
     }
 
     // Show the full-page overlay
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
-        fullPage.style.display = "block";  // Ensure overlay is visible
-    } else {
-        console.error("Could not find #fullPage element");
+        fullPage.style.display = "block";  // Show overlay
     }
 
     // Optionally, set the page title to the ad's title
@@ -203,7 +204,7 @@ function showAd(html, title) {
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
 
-// Close the overlay when the user clicks outside of the content
+// Close the full-page overlay when the user clicks outside the content
 window.onclick = function(event) {
     const fullPage = document.getElementById("fullPage");
     if (event.target === fullPage) {
@@ -214,15 +215,15 @@ window.onclick = function(event) {
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
-        fullPage.style.display = "none"; // Hide the overlay when the user clicks outside
+        fullPage.style.display = "none";  // Hide overlay when clicking outside
     }
-    history.back(); // Allow the user to navigate back in history
+    history.back();  // Allow user to go back in browser history
 }
 
 // Handle browser back button
 window.onpopstate = function(event) {
     const overlay = document.getElementById("fullPage");
     if (overlay && overlay.style.display === "block") {
-        overlay.style.display = "none"; // Close overlay when back button is pressed
+        overlay.style.display = "none";  // Close overlay if back button is pressed
     }
 };
