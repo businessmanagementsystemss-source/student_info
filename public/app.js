@@ -157,16 +157,15 @@ async function loadAds() {
             const carousel = document.getElementById("adsCarousel");
             carousel.innerHTML = ''; // Clear previous ads
             
-            // 💡 The change: display all cards at once for testing
             carousel.style.display = 'flex';
             carousel.style.gap = '10px';
-            carousel.style.overflowX = 'auto'; // Make it scrollable if needed
+            carousel.style.overflowX = 'auto';
             
             adsImages.forEach(ad => {
                 const img = document.createElement('img');
                 img.src = ad.image;
                 img.alt = ad.title; 
-                img.style.width = '250px'; // Set a fixed width for each image
+                img.style.width = '250px';
                 img.style.height = '150px';
                 img.style.objectFit = 'cover';
                 img.style.cursor = 'pointer';
@@ -184,33 +183,18 @@ async function loadAds() {
     }
 }
 
-// The following functions are no longer needed for this test
-// but are kept here to avoid errors. You can remove them later.
-function nextAd() {}
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
-
-    // Clear previous content before inserting new HTML
     fullContent.innerHTML = '';
-
-    // Inject the raw HTML directly into the container
     fullContent.innerHTML = html;
-
-    // Show the full-page overlay
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
         fullPage.style.display = "block";
     }
-
-    // Set the page title to the ad's title
     document.title = title || 'Ad - Student Portal';
-
-    // Push a history state for browser back
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
 
-
-// Close the full-page overlay when the user clicks outside the content
 window.onclick = function(event) {
     const fullPage = document.getElementById("fullPage");
     if (event.target === fullPage) {
@@ -218,7 +202,6 @@ window.onclick = function(event) {
     }
 };
 
-// Close the full-page overlay
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
@@ -227,7 +210,6 @@ function closeFullPage() {
     history.back();
 }
 
-// Handle browser back button
 window.onpopstate = function(event) {
     const overlay = document.getElementById("fullPage");
     if (overlay && overlay.style.display === "block") {
