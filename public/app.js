@@ -193,10 +193,13 @@ function nextAd() {
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
 
+    // Debugging: Log when the showAd function is called
+    console.log("showAd function called with title:", title);
+
     // Clear previous content
     fullContent.innerHTML = '';
 
-    // Directly inject the HTML content (assuming 'html' contains the ad's content)
+    // Inject the raw HTML directly into the container
     fullContent.innerHTML = html;
 
     // Show the full-page overlay
@@ -211,6 +214,7 @@ function showAd(html, title) {
     // Push a history state for browser back
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
+
 
 // Close the full-page overlay when the user clicks outside the content
 window.onclick = function(event) {
