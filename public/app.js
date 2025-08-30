@@ -158,8 +158,12 @@ async function loadAds() {
                 img.alt = ad.title;  // Add alt text for accessibility
                 img.style.opacity = i === 0 ? 1 : 0;  // Initially highlight the first image
 
+                // Debugging: Check if the image is loaded
+                console.log("Ad Image Loaded: ", ad.image);
+
                 // Ensure the correct 'html' content is passed when the image is clicked
                 img.onclick = function() {
+                    console.log("Ad clicked: ", ad.title);  // Check if click event is triggered
                     showAd(ad.html, ad.title); // Dynamically pass each ad's content
                 };
 
@@ -189,8 +193,8 @@ function nextAd() {
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
 
-    // Debug: Check the HTML content being passed
-    console.log("HTML Content: ", html);
+    // Debugging: Log when the showAd function is called
+    console.log("showAd function called with title:", title);
 
     // Clear the previous content
     fullContent.innerHTML = '';
@@ -202,7 +206,7 @@ function showAd(html, title) {
     // Extract the body content from the ad HTML
     const bodyContent = tempDiv.querySelector('body').innerHTML;
 
-    // Debug: Log the extracted content
+    // Debugging: Log the extracted content
     console.log("Extracted Content: ", bodyContent);
 
     // Now insert the extracted body content into the full content container
@@ -211,6 +215,7 @@ function showAd(html, title) {
     // Show the full-page overlay
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
+        console.log("Showing full-page overlay.");
         fullPage.style.display = "block";  // Show overlay
     }
 
@@ -233,6 +238,7 @@ window.onclick = function(event) {
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
+        console.log("Closing full-page overlay.");
         fullPage.style.display = "none";  // Hide overlay when clicking outside
     }
     history.back();  // Allow user to go back in browser history
@@ -245,4 +251,3 @@ window.onpopstate = function(event) {
         overlay.style.display = "none";  // Close overlay if back button is pressed
     }
 };
-
