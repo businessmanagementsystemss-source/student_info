@@ -144,43 +144,95 @@ window.onpopstate = function(event) {
 // -------------------------
 // Ads carousel
 // -------------------------
+let ads = [];
+let currentIndex = 0;
+let carouselInterval;
+
 async function loadAds() {
     try {
         const res = await fetch('/api/ads');
         const data = await res.json();
-        
-        console.log("Ads data received:", data);
-        console.log(`Number of ads received: ${data.ads ? data.ads.length : 0}`);
 
-        if (data.success) {
-            const adsImages = data.ads;
+        if (data.success && data.ads.length > 0) {
+            ads = data.ads;
             const carousel = document.getElementById("adsCarousel");
-            carousel.innerHTML = ''; // Clear previous ads
+            carousel.innerHTML = '';
             
-            carousel.style.display = 'flex';
-            carousel.style.gap = '10px';
-            carousel.style.overflowX = 'auto';
-            
-            adsImages.forEach(ad => {
+            // Create a new inner container for the sliding effect
+            const carouselInner = document.createElement('div');
+            carouselInner.style.display = 'flex';
+            carouselInner.style.transition = 'transform 0.5s ease-in-out';
+
+            ads.forEach((ad, i) => {
                 const img = document.createElement('img');
                 img.src = ad.image;
-                img.alt = ad.title; 
-                img.style.width = '250px';
-                img.style.height = '150px';
+                img.alt = ad.title;
+                img.style.minWidth = '100%';
+                img.style.height = '100%';
                 img.style.objectFit = 'cover';
                 img.style.cursor = 'pointer';
 
                 img.addEventListener('click', () => {
-                    console.log(`Clicked on ad: ${ad.title}`);
                     showAd(ad.html, ad.title);
                 });
-
-                carousel.appendChild(img);
+                
+                carouselInner.appendChild(img);
             });
+            
+            carousel.appendChild(carouselInner);
+
+            // Add navigation buttons
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '<';
+            prevBtn.onclick = () => moveCarousel(-1);
+
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = '>';
+            nextBtn.onclick = () => moveCarousel(1);
+            
+            // Style the buttons
+            const btnStyle = `
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background-color: rgba(0,0,0,0.5);
+                color: white;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                padding: 10px;
+                z-index: 10;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            `;
+            prevBtn.style.cssText = btnStyle + 'left: 10px;';
+            nextBtn.style.cssText = btnStyle + 'right: 10px;';
+
+            carousel.style.position = 'relative';
+            carousel.style.overflow = 'hidden';
+            carousel.style.height = '200px'; // Set a fixed height
+            carousel.appendChild(prevBtn);
+            carousel.appendChild(nextBtn);
+
+            // Start auto-play if more than one ad
+            if (ads.length > 1) {
+                carouselInterval = setInterval(() => moveCarousel(1), 5000);
+            }
+
         }
     } catch (e) {
         console.error("Error loading ads:", e);
     }
+}
+
+function moveCarousel(direction) {
+    const carouselInner = document.querySelector("#adsCarousel > div");
+    if (!carouselInner) return;
+
+    currentIndex = (currentIndex + direction + ads.length) % ads.length;
+    carouselInner.style.transform = `translateX(-${currentIndex * 100}%)`;
 }
 
 function showAd(html, title) {
