@@ -193,33 +193,19 @@ function nextAd() {
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
 
-    // Debugging: Log when the showAd function is called
-    console.log("showAd function called with title:", title);
-
-    // Clear the previous content
+    // Clear previous content
     fullContent.innerHTML = '';
 
-    // Create a temporary div to hold the raw HTML and extract content
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;  // Inject the raw HTML into the temporary container
-
-    // Extract the body content from the ad HTML
-    const bodyContent = tempDiv.querySelector('body').innerHTML;
-
-    // Debugging: Log the extracted content
-    console.log("Extracted Content: ", bodyContent);
-
-    // Now insert the extracted body content into the full content container
-    fullContent.innerHTML = bodyContent; 
+    // Directly inject the HTML content (assuming 'html' contains the ad's content)
+    fullContent.innerHTML = html;
 
     // Show the full-page overlay
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
-        console.log("Showing full-page overlay.");
         fullPage.style.display = "block";  // Show overlay
     }
 
-    // Optionally, set the page title to the ad's title
+    // Set the page title to the ad's title
     document.title = title || 'Ad - Student Portal';
 
     // Push a history state for browser back
@@ -238,7 +224,6 @@ window.onclick = function(event) {
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
-        console.log("Closing full-page overlay.");
         fullPage.style.display = "none";  // Hide overlay when clicking outside
     }
     history.back();  // Allow user to go back in browser history
