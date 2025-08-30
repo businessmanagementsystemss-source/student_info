@@ -189,6 +189,9 @@ function nextAd() {
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
 
+    // Debug: Check the HTML content being passed
+    console.log("HTML Content: ", html);
+
     // Clear the previous content
     fullContent.innerHTML = '';
 
@@ -198,6 +201,9 @@ function showAd(html, title) {
 
     // Extract the body content from the ad HTML
     const bodyContent = tempDiv.querySelector('body').innerHTML;
+
+    // Debug: Log the extracted content
+    console.log("Extracted Content: ", bodyContent);
 
     // Now insert the extracted body content into the full content container
     fullContent.innerHTML = bodyContent; 
@@ -239,3 +245,4 @@ window.onpopstate = function(event) {
         overlay.style.display = "none";  // Close overlay if back button is pressed
     }
 };
+
