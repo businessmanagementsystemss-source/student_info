@@ -196,11 +196,14 @@ function showAd(html, title) {
     // Debugging: Log when the showAd function is called
     console.log("showAd function called with title:", title);
 
-    // Clear previous content
+    // Clear previous content before inserting new HTML
     fullContent.innerHTML = '';
 
     // Inject the raw HTML directly into the container
     fullContent.innerHTML = html;
+
+    // Check if the HTML content is injected correctly
+    console.log("Injected HTML:", fullContent.innerHTML);
 
     // Show the full-page overlay
     const fullPage = document.getElementById("fullPage");
