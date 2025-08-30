@@ -156,20 +156,21 @@ async function loadAds() {
             const carousel = document.getElementById("adsCarousel");
             carousel.innerHTML = ''; // Clear previous ads
 
-            adsImages.forEach((ad, i) => {
+            adsImages.forEach(ad => {
                 const img = document.createElement('img');
                 img.src = ad.image;
                 img.alt = ad.title; // Add alt text for accessibility
-                img.style.opacity = i === 0 ? 1 : 0; // Initially highlight the first image
+                img.style.opacity = adsImages.indexOf(ad) === 0 ? 1 : 0; // Initially highlight the first image
 
-                // Check if the image is loaded
-                console.log("Ad Image Loaded: ", ad.image);
-
-                // Ensure the correct 'html' content is passed when the image is clicked
-                img.onclick = function() {
-                    console.log("Ad clicked: ", ad.title); // Check if click event is triggered
-                    showAd(ad.html, ad.title); // Dynamically pass each ad's content
-                };
+                // This is the updated part to fix the closure issue.
+                // We wrap the event listener in an IIFE to ensure 'ad' is
+                // correctly captured for each iteration.
+                (function(adObject) {
+                    img.onclick = function() {
+                        console.log("Ad clicked: ", adObject.title);
+                        showAd(adObject.html, adObject.title);
+                    };
+                })(ad);
 
                 carousel.appendChild(img);
             });
