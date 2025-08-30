@@ -181,7 +181,18 @@ async function loadAds() {
             
             carousel.appendChild(carouselInner);
 
-            // Add navigation buttons
+            // Create a navigation container to hold the buttons
+            const navContainer = document.createElement('div');
+            navContainer.style.position = 'absolute';
+            navContainer.style.top = '50%';
+            navContainer.style.transform = 'translateY(-50%)';
+            navContainer.style.width = '100%';
+            navContainer.style.display = 'flex';
+            navContainer.style.justifyContent = 'space-between';
+            navContainer.style.padding = '0 10px';
+            navContainer.style.boxSizing = 'border-box'; // Ensure padding is included in width
+
+            // Create Previous and Next buttons
             const prevBtn = document.createElement('button');
             prevBtn.textContent = '<';
             prevBtn.onclick = () => moveCarousel(-1);
@@ -192,31 +203,29 @@ async function loadAds() {
             
             // Style the buttons
             const btnStyle = `
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
                 background-color: rgba(0,0,0,0.5);
                 color: white;
                 border: none;
                 font-size: 24px;
                 cursor: pointer;
-                padding: 10px;
-                z-index: 10;
+                width: 40px;
+                height: 40px;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
             `;
-            prevBtn.style.cssText = btnStyle + 'left: 10px;';
-            nextBtn.style.cssText = btnStyle + 'right: 10px;';
+            prevBtn.style.cssText = btnStyle;
+            nextBtn.style.cssText = btnStyle;
+
+            navContainer.appendChild(prevBtn);
+            navContainer.appendChild(nextBtn);
 
             carousel.style.position = 'relative';
             carousel.style.overflow = 'hidden';
-            carousel.style.height = '200px'; // Set a fixed height
-            carousel.appendChild(prevBtn);
-            carousel.appendChild(nextBtn);
+            carousel.style.height = '200px';
+            carousel.appendChild(navContainer);
 
-            // Start auto-play if more than one ad
             if (ads.length > 1) {
                 carouselInterval = setInterval(() => moveCarousel(1), 5000);
             }
