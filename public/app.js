@@ -161,12 +161,11 @@ async function loadAds() {
             // Set up main carousel container for fixed size and relative positioning
             carousel.style.position = 'relative';
             carousel.style.width = '100%';
-            carousel.style.maxWidth = '600px'; // Set a max-width to prevent stretching
-            carousel.style.margin = '0 auto'; // Center the carousel
+            carousel.style.maxWidth = '600px'; 
+            carousel.style.margin = '0 auto'; 
             carousel.style.overflow = 'hidden';
             carousel.style.height = '200px'; 
             
-            // Create a new inner container for the sliding effect
             const carouselInner = document.createElement('div');
             carouselInner.style.display = 'flex';
             carouselInner.style.width = `${ads.length * 100}%`;
@@ -175,9 +174,18 @@ async function loadAds() {
             
             ads.forEach((ad, i) => {
                 const img = document.createElement('img');
+                
+                // --- Diagnostic checks ---
+                console.log(`Loading image for ad #${i + 1}: ${ad.image}`);
+                img.onerror = () => {
+                    console.error(`Error loading image for ad #${i + 1} from URL: ${ad.image}`);
+                    // Optionally set a placeholder image or style to indicate an error
+                    img.src = 'https://placehold.co/250x150/EEEEEE/333333?text=Image+Not+Found';
+                };
+                
                 img.src = ad.image;
                 img.alt = ad.title;
-                img.style.width = `${100 / ads.length}%`; // Each image takes up its percentage of the inner container
+                img.style.width = `${100 / ads.length}%`;
                 img.style.height = '100%';
                 img.style.objectFit = 'cover';
                 img.style.cursor = 'pointer';
@@ -192,7 +200,6 @@ async function loadAds() {
             carousel.appendChild(carouselInner);
 
             if (ads.length > 1) {
-                // Create navigation buttons
                 const prevBtn = document.createElement('button');
                 prevBtn.textContent = '<';
                 prevBtn.addEventListener('click', () => moveCarousel(-1));
@@ -201,7 +208,6 @@ async function loadAds() {
                 nextBtn.textContent = '>';
                 nextBtn.addEventListener('click', () => moveCarousel(1));
 
-                // Style the buttons
                 const btnStyle = `
                     position: absolute;
                     top: 50%;
@@ -225,7 +231,6 @@ async function loadAds() {
                 carousel.appendChild(prevBtn);
                 carousel.appendChild(nextBtn);
 
-                // Start auto-play
                 clearInterval(carouselInterval);
                 carouselInterval = setInterval(() => moveCarousel(1), 5000);
             }
