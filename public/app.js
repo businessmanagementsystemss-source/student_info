@@ -150,6 +150,7 @@ async function loadAds() {
         const data = await res.json();
         
         console.log("Ads data received:", data);
+        console.log(`Number of ads received: ${data.ads ? data.ads.length : 0}`);
 
         if (data.success) {
             const adsImages = data.ads;
