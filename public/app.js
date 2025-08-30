@@ -161,7 +161,6 @@ async function loadAds() {
                 // Ensure the correct 'html' content is passed when the image is clicked
                 img.onclick = function() {
                     showAd(ad.html, ad.title); // Dynamically pass each ad's content
-                    currentAd = i; // Update the currentAd index to the clicked ad
                 };
 
                 carousel.appendChild(img);
@@ -188,11 +187,10 @@ function nextAd() {
 
 // Function to display the content for the clicked ad
 function showAd(html, title) {
-    // Ensure we are passing the correct HTML content for each ad
     const fullContent = document.getElementById("fullContent");
 
     // Debug: Check which HTML content is being passed
-    console.log("Ad HTML content: ", html); // Make sure this is correct for each ad
+    console.log("Ad HTML content: ", html);
 
     if (fullContent) {
         fullContent.innerHTML = html;  // Set the HTML content of the clicked ad
