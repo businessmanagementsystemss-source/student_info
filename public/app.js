@@ -148,14 +148,13 @@ async function loadAds() {
         if (data.success) {
             adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
-            carousel.innerHTML = ''; // Clear existing ads
+            carousel.innerHTML = ''; // Clear previous ads
 
-            // Create the ad images in the carousel
             adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
                 img.src = ad.image;
                 img.style.opacity = i === 0 ? 1 : 0;
-                img.onclick = () => { showAd(ad.html, ad.title); };  // Pass the HTML and title for each ad
+                img.onclick = () => { showAd(ad.html, ad.title); };  // Ensure we pass the unique ad content
                 carousel.appendChild(img);
             });
 
@@ -164,7 +163,7 @@ async function loadAds() {
             }
         }
     } catch (e) {
-        console.error(e);
+        console.error("Error loading ads:", e);
     }
 }
 
@@ -177,14 +176,53 @@ function nextAd() {
 }
 
 function showAd(html, title) {
-    // Update the content when an ad is clicked
+    // Ensure we correctly update the content of #fullContent with the unique HTML
     const fullContent = document.getElementById("fullContent");
-    fullContent.innerHTML = html;  // Update the ad content
-    document.getElementById("fullPage").style.display = "block";
-    
-    // Optionally, update the page title or other UI elements
-    document.title = title || 'Ad - Student Portal'; // Set the title to the ad title
+
+    // Check if the HTML is being passed correctly
+    console.log("Ad HTML content: ", html); // Debug log to ensure we get the right HTML
+
+    if (fullContent) {
+        fullContent.innerHTML = html;  // Set the HTML of the clicked ad
+    } else {
+        console.error("Could not find #fullContent element");
+    }
+
+    // Show the full-page overlay
+    const fullPage = document.getElementById("fullPage");
+    if (fullPage) {
+        fullPage.style.display = "block";  // Ensure overlay is visible
+    } else {
+        console.error("Could not find #fullPage element");
+    }
+
+    // Optionally, set the page title to the ad's title
+    document.title = title || 'Ad - Student Portal';
 
     // Push a history state for browser back
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
+
+// Close the overlay when the user clicks outside of the content
+window.onclick = function(event) {
+    const fullPage = document.getElementById("fullPage");
+    if (event.target === fullPage) {
+        closeFullPage();
+    }
+};
+
+function closeFullPage() {
+    const fullPage = document.getElementById("fullPage");
+    if (fullPage) {
+        fullPage.style.display = "none"; // Hide the overlay when the user clicks outside
+    }
+    history.back(); // Allow the user to navigate back in history
+}
+
+// Handle browser back button
+window.onpopstate = function(event) {
+    const overlay = document.getElementById("fullPage");
+    if (overlay && overlay.style.display === "block") {
+        overlay.style.display = "none"; // Close overlay when back button is pressed
+    }
+};
