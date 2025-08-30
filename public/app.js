@@ -151,6 +151,11 @@ async function loadAds() {
     try {
         const res = await fetch('/api/ads');
         const data = await res.json();
+        
+        // --- ADDED DEBUGGING LOGS HERE ---
+        console.log("Response from /api/ads:", data);
+        // --- END OF ADDED LOGS ---
+
         if (data.success) {
             adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
@@ -159,23 +164,24 @@ async function loadAds() {
             adsImages.forEach(ad => {
                 const img = document.createElement('img');
                 img.src = ad.image;
-                img.alt = ad.title; // Add alt text for accessibility
-                img.style.opacity = adsImages.indexOf(ad) === 0 ? 1 : 0; // Initially highlight the first image
+                img.alt = ad.title;
+                img.style.opacity = adsImages.indexOf(ad) === 0 ? 1 : 0;
 
-                // This is the updated part to fix the closure issue.
-                // We wrap the event listener in an IIFE to ensure 'ad' is
-                // correctly captured for each iteration.
-                (function(adObject) {
-                    img.onclick = function() {
-                        console.log("Ad clicked: ", adObject.title);
-                        showAd(adObject.html, adObject.title);
-                    };
-                })(ad);
+                // --- ADDED DEBUGGING LOG HERE ---
+                console.log(`Processing ad: ${ad.title}, HTML length: ${ad.html.length}`);
+                // --- END OF ADDED LOG ---
+
+                img.onclick = function() {
+                    console.log(`Clicked on ad: ${ad.title}`);
+                    // --- ADDED DEBUGGING LOG HERE ---
+                    console.log(`HTML being passed to showAd: ${ad.html.substring(0, 100)}...`); // Logs first 100 characters
+                    // --- END OF ADDED LOG ---
+                    showAd(ad.html, ad.title);
+                };
 
                 carousel.appendChild(img);
             });
 
-            // Optional: Cycle through ads every 10 seconds
             if (adsImages.length > 1) {
                 setInterval(nextAd, 10000);
             }
@@ -198,22 +204,16 @@ function nextAd() {
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
 
-    // Log when the showAd function is called
-    console.log("showAd function called with title:", title);
-
     // Clear previous content before inserting new HTML
     fullContent.innerHTML = '';
 
     // Inject the raw HTML directly into the container
     fullContent.innerHTML = html;
 
-    // Check if the HTML content is injected correctly
-    console.log("Injected HTML:", fullContent.innerHTML);
-
     // Show the full-page overlay
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
-        fullPage.style.display = "block"; // Show overlay
+        fullPage.style.display = "block";
     }
 
     // Set the page title to the ad's title
@@ -236,15 +236,15 @@ window.onclick = function(event) {
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
-        fullPage.style.display = "none"; // Hide overlay when clicking outside
+        fullPage.style.display = "none";
     }
-    history.back(); // Allow user to go back in browser history
+    history.back();
 }
 
 // Handle browser back button
 window.onpopstate = function(event) {
     const overlay = document.getElementById("fullPage");
     if (overlay && overlay.style.display === "block") {
-        overlay.style.display = "none"; // Close overlay if back button is pressed
+        overlay.style.display = "none";
     }
 };
