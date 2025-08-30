@@ -110,7 +110,10 @@ window.closeFullPage = function() {
 
 window.openResults = async function() {
     const reg = window.loggedReg;
-    if (!reg) { alert("Registration number missing"); return; }
+    if (!reg) {
+        alert("Registration number missing");
+        return;
+    }
 
     try {
         const res = await fetch(`/api/results?reg=${encodeURIComponent(reg)}`);
@@ -141,7 +144,8 @@ window.onpopstate = function(event) {
 // -------------------------
 // Ads carousel
 // -------------------------
-let adsImages = [], currentAd = 0;
+let adsImages = [],
+    currentAd = 0;
 
 async function loadAds() {
     try {
@@ -155,15 +159,15 @@ async function loadAds() {
             adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
                 img.src = ad.image;
-                img.alt = ad.title;  // Add alt text for accessibility
-                img.style.opacity = i === 0 ? 1 : 0;  // Initially highlight the first image
+                img.alt = ad.title; // Add alt text for accessibility
+                img.style.opacity = i === 0 ? 1 : 0; // Initially highlight the first image
 
-                // Debugging: Check if the image is loaded
+                // Check if the image is loaded
                 console.log("Ad Image Loaded: ", ad.image);
 
                 // Ensure the correct 'html' content is passed when the image is clicked
                 img.onclick = function() {
-                    console.log("Ad clicked: ", ad.title);  // Check if click event is triggered
+                    console.log("Ad clicked: ", ad.title); // Check if click event is triggered
                     showAd(ad.html, ad.title); // Dynamically pass each ad's content
                 };
 
@@ -193,7 +197,7 @@ function nextAd() {
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
 
-    // Debugging: Log when the showAd function is called
+    // Log when the showAd function is called
     console.log("showAd function called with title:", title);
 
     // Clear previous content before inserting new HTML
@@ -208,7 +212,7 @@ function showAd(html, title) {
     // Show the full-page overlay
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
-        fullPage.style.display = "block";  // Show overlay
+        fullPage.style.display = "block"; // Show overlay
     }
 
     // Set the page title to the ad's title
@@ -231,15 +235,15 @@ window.onclick = function(event) {
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
-        fullPage.style.display = "none";  // Hide overlay when clicking outside
+        fullPage.style.display = "none"; // Hide overlay when clicking outside
     }
-    history.back();  // Allow user to go back in browser history
+    history.back(); // Allow user to go back in browser history
 }
 
 // Handle browser back button
 window.onpopstate = function(event) {
     const overlay = document.getElementById("fullPage");
     if (overlay && overlay.style.display === "block") {
-        overlay.style.display = "none";  // Close overlay if back button is pressed
+        overlay.style.display = "none"; // Close overlay if back button is pressed
     }
 };
