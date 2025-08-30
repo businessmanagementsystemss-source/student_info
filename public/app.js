@@ -158,11 +158,20 @@ async function loadAds() {
             const carousel = document.getElementById("adsCarousel");
             carousel.innerHTML = '';
             
+            // Set up main carousel container for fixed size and relative positioning
+            carousel.style.position = 'relative';
+            carousel.style.width = '100%';
+            carousel.style.maxWidth = '600px'; // Set a max-width to prevent stretching
+            carousel.style.margin = '0 auto'; // Center the carousel
+            carousel.style.overflow = 'hidden';
+            carousel.style.height = '200px'; 
+            
+            // Create a new inner container for the sliding effect
             const carouselInner = document.createElement('div');
             carouselInner.style.display = 'flex';
-            carouselInner.style.transition = 'transform 0.5s ease-in-out';
             carouselInner.style.width = `${ads.length * 100}%`;
             carouselInner.style.height = '100%';
+            carouselInner.style.transition = 'transform 0.5s ease-in-out';
             
             ads.forEach((ad, i) => {
                 const img = document.createElement('img');
@@ -180,13 +189,10 @@ async function loadAds() {
                 carouselInner.appendChild(img);
             });
             
-            carousel.style.position = 'relative';
-            carousel.style.overflow = 'hidden';
-            carousel.style.height = '200px'; 
             carousel.appendChild(carouselInner);
 
             if (ads.length > 1) {
-                // Create and style navigation buttons
+                // Create navigation buttons
                 const prevBtn = document.createElement('button');
                 prevBtn.textContent = '<';
                 prevBtn.addEventListener('click', () => moveCarousel(-1));
@@ -195,6 +201,7 @@ async function loadAds() {
                 nextBtn.textContent = '>';
                 nextBtn.addEventListener('click', () => moveCarousel(1));
 
+                // Style the buttons
                 const btnStyle = `
                     position: absolute;
                     top: 50%;
@@ -231,10 +238,7 @@ async function loadAds() {
 
 function moveCarousel(direction) {
     const carouselInner = document.querySelector("#adsCarousel > div");
-    if (!carouselInner) return;
-
-    // Check if ads array is not empty before moving
-    if (ads.length === 0) return;
+    if (!carouselInner || ads.length === 0) return;
 
     currentIndex = (currentIndex + direction + ads.length) % ads.length;
     carouselInner.style.transform = `translateX(-${currentIndex * 100}%)`;
