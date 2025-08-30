@@ -138,9 +138,7 @@ window.onpopstate = function(event) {
     }
 };
 
-// -------------------------
 // Ads carousel
-// -------------------------
 let adsImages = [], currentAd = 0;
 
 async function loadAds() {
@@ -150,14 +148,17 @@ async function loadAds() {
         if (data.success) {
             adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
-            carousel.innerHTML = '';
+            carousel.innerHTML = ''; // Clear existing ads
+
+            // Create the ad images in the carousel
             adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
                 img.src = ad.image;
                 img.style.opacity = i === 0 ? 1 : 0;
-                img.onclick = () => { showAd(ad.html); };
+                img.onclick = () => { showAd(ad.html, ad.title); };  // Pass the HTML and title for each ad
                 carousel.appendChild(img);
             });
+
             if (adsImages.length > 1) {
                 setInterval(nextAd, 10000);
             }
@@ -175,10 +176,15 @@ function nextAd() {
     imgs[currentAd].style.opacity = 1;
 }
 
-function showAd(html) {
-    document.getElementById("fullContent").innerHTML = html;
+function showAd(html, title) {
+    // Update the content when an ad is clicked
+    const fullContent = document.getElementById("fullContent");
+    fullContent.innerHTML = html;  // Update the ad content
     document.getElementById("fullPage").style.display = "block";
+    
+    // Optionally, update the page title or other UI elements
+    document.title = title || 'Ad - Student Portal'; // Set the title to the ad title
 
     // Push a history state for browser back
-    history.pushState({ page: 'ads' }, '', '#ads');
+    history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
