@@ -138,7 +138,9 @@ window.onpopstate = function(event) {
     }
 };
 
+// -------------------------
 // Ads carousel
+// -------------------------
 let adsImages = [], currentAd = 0;
 
 async function loadAds() {
@@ -153,16 +155,19 @@ async function loadAds() {
             adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
                 img.src = ad.image;
-                img.style.opacity = i === 0 ? 1 : 0;
+                img.alt = ad.title;  // Add alt text for accessibility
+                img.style.opacity = i === 0 ? 1 : 0;  // Initially highlight the first image
 
                 // Ensure the correct 'html' content is passed when the image is clicked
                 img.onclick = function() {
                     showAd(ad.html, ad.title); // Dynamically pass each ad's content
+                    currentAd = i; // Update the currentAd index to the clicked ad
                 };
 
                 carousel.appendChild(img);
             });
 
+            // Optional: Cycle through ads every 10 seconds
             if (adsImages.length > 1) {
                 setInterval(nextAd, 10000);
             }
@@ -172,6 +177,7 @@ async function loadAds() {
     }
 }
 
+// Function to cycle ads in the carousel
 function nextAd() {
     if (adsImages.length < 2) return;
     const imgs = document.querySelectorAll("#adsCarousel img");
@@ -180,6 +186,7 @@ function nextAd() {
     imgs[currentAd].style.opacity = 1;
 }
 
+// Function to display the content for the clicked ad
 function showAd(html, title) {
     // Ensure we are passing the correct HTML content for each ad
     const fullContent = document.getElementById("fullContent");
@@ -212,6 +219,7 @@ window.onclick = function(event) {
     }
 };
 
+// Close the full-page overlay
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
