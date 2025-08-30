@@ -3,28 +3,28 @@
 // -------------------------
 
 // Toggle between login and register pages
-window.showPage = function(pageId){
+window.showPage = function(pageId) {
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("registerPage").classList.add("hidden");
     document.getElementById(pageId).classList.remove("hidden");
-}
+};
 
 // Toggle password visibility
-window.togglePassword = function(fieldId, icon){
+window.togglePassword = function(fieldId, icon) {
     const field = document.getElementById(fieldId);
-    if(field.type === "password"){
+    if (field.type === "password") {
         field.type = "text";
-        icon.textContent="🚫";
+        icon.textContent = "🚫";
     } else {
         field.type = "password";
-        icon.textContent="👁️";
+        icon.textContent = "👁️";
     }
-}
+};
 
 // -------------------------
 // Registration
 // -------------------------
-window.register = async function(){
+window.register = async function() {
     const name = document.getElementById("fullName").value.trim();
     const reg = document.getElementById("regNumber").value.trim();
     const email = document.getElementById("email").value.trim();
@@ -34,11 +34,11 @@ window.register = async function(){
     const pass = document.getElementById("password").value;
     const repeatPass = document.getElementById("repeatPassword").value;
 
-    if(!name || !reg || !email || !phone || !gender || !dob || !pass || !repeatPass){
+    if (!name || !reg || !email || !phone || !gender || !dob || !pass || !repeatPass) {
         alert("Please fill all fields!");
         return;
     }
-    if(pass !== repeatPass){
+    if (pass !== repeatPass) {
         alert("Passwords do not match!");
         return;
     }
@@ -50,26 +50,26 @@ window.register = async function(){
             body: JSON.stringify({ name, reg, email, phone, gender, dob, password: pass })
         });
         const data = await res.json();
-        if(data.success){
+        if (data.success) {
             alert(`✅ Registered Successfully!\nName: ${name}\nReg: ${reg}`);
             showPage('loginPage');
         } else {
             alert(data.error || "Error registering student");
         }
-    } catch(e){
+    } catch (e) {
         console.error(e);
         alert("Error connecting to server");
     }
-}
+};
 
 // -------------------------
 // Login
 // -------------------------
-window.login = async function(){
+window.login = async function() {
     const reg = document.getElementById("loginReg").value.trim();
     const pass = document.getElementById("loginPass").value;
 
-    if(!reg || !pass){
+    if (!reg || !pass) {
         alert("Enter registration number and password");
         return;
     }
@@ -81,7 +81,7 @@ window.login = async function(){
             body: JSON.stringify({ reg, password: pass })
         });
         const data = await res.json();
-        if(data.success){
+        if (data.success) {
             // Store logged-in reg number for results
             window.loggedReg = reg;
 
@@ -91,76 +91,94 @@ window.login = async function(){
         } else {
             alert(data.error);
         }
-    } catch(e){
+    } catch (e) {
         console.error(e);
         alert("Error connecting to server");
     }
-}
+};
 
 // -------------------------
 // Full-page overlay
 // -------------------------
-window.closeFullPage = function(){
-    document.getElementById("fullPage").style.display="none";
-}
+window.closeFullPage = function() {
+    document.getElementById("fullPage").style.display = "none";
+    // Remove the history state when closing overlay
+    if (window.location.hash === "#results") {
+        history.back();
+    }
+};
 
-window.openResults = async function(){
+window.openResults = async function() {
     const reg = window.loggedReg;
-    if(!reg) { alert("Registration number missing"); return; }
+    if (!reg) { alert("Registration number missing"); return; }
 
     try {
         const res = await fetch(`/api/results?reg=${encodeURIComponent(reg)}`);
         const data = await res.json();
-        if(data.success){
+        if (data.success) {
             document.getElementById("fullContent").innerHTML = data.html;
-            document.getElementById("fullPage").style.display="block";
+            document.getElementById("fullPage").style.display = "block";
+
+            // Push a history state for browser back button
+            history.pushState({ page: 'results' }, '', '#results');
         } else {
             alert(data.error);
         }
-    } catch(e){
+    } catch (e) {
         console.error(e);
         alert("Error fetching results");
     }
-}
+};
+
+// Handle browser back button
+window.onpopstate = function(event) {
+    const overlay = document.getElementById("fullPage");
+    if (overlay.style.display === "block") {
+        overlay.style.display = "none";
+    }
+};
 
 // -------------------------
 // Ads carousel
 // -------------------------
 let adsImages = [], currentAd = 0;
 
-async function loadAds(){
+async function loadAds() {
     try {
         const res = await fetch('/api/ads');
         const data = await res.json();
-        if(data.success){
+        if (data.success) {
             adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
             carousel.innerHTML = '';
             adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
                 img.src = ad.image;
-                img.style.opacity = i===0 ? 1 : 0;
-                img.onclick = () => { showAd(ad.html); }
+                img.style.opacity = i === 0 ? 1 : 0;
+                img.onclick = () => { showAd(ad.html); };
                 carousel.appendChild(img);
             });
-            if(adsImages.length > 1){
+            if (adsImages.length > 1) {
                 setInterval(nextAd, 10000);
             }
         }
-    } catch(e){
+    } catch (e) {
         console.error(e);
     }
 }
 
-function nextAd(){
-    if(adsImages.length < 2) return;
+function nextAd() {
+    if (adsImages.length < 2) return;
     const imgs = document.querySelectorAll("#adsCarousel img");
     imgs[currentAd].style.opacity = 0;
     currentAd = (currentAd + 1) % adsImages.length;
     imgs[currentAd].style.opacity = 1;
 }
 
-function showAd(html){
+function showAd(html) {
     document.getElementById("fullContent").innerHTML = html;
     document.getElementById("fullPage").style.display = "block";
+
+    // Push a history state for browser back
+    history.pushState({ page: 'ads' }, '', '#ads');
 }
