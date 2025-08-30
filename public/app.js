@@ -152,36 +152,29 @@ async function loadAds() {
         const res = await fetch('/api/ads');
         const data = await res.json();
         
-        // --- ADDED DEBUGGING LOGS HERE ---
-        console.log("Response from /api/ads:", data);
-        // --- END OF ADDED LOGS ---
+        console.log("Ads data received:", data); // Log the full data object
 
         if (data.success) {
             adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
             carousel.innerHTML = ''; // Clear previous ads
 
-            adsImages.forEach(ad => {
+            adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
                 img.src = ad.image;
-                img.alt = ad.title;
-                img.style.opacity = adsImages.indexOf(ad) === 0 ? 1 : 0;
+                img.alt = ad.title; // Add alt text for accessibility
+                img.style.opacity = i === 0 ? 1 : 0; // Initially highlight the first image
 
-                // --- ADDED DEBUGGING LOG HERE ---
-                console.log(`Processing ad: ${ad.title}, HTML length: ${ad.html.length}`);
-                // --- END OF ADDED LOG ---
-
-                img.onclick = function() {
+                // The fix: Use a proper event listener with a closure
+                img.addEventListener('click', () => {
                     console.log(`Clicked on ad: ${ad.title}`);
-                    // --- ADDED DEBUGGING LOG HERE ---
-                    console.log(`HTML being passed to showAd: ${ad.html.substring(0, 100)}...`); // Logs first 100 characters
-                    // --- END OF ADDED LOG ---
                     showAd(ad.html, ad.title);
-                };
+                });
 
                 carousel.appendChild(img);
             });
 
+            // Optional: Cycle through ads every 10 seconds
             if (adsImages.length > 1) {
                 setInterval(nextAd, 10000);
             }
