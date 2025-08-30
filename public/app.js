@@ -144,123 +144,80 @@ window.onpopstate = function(event) {
 // -------------------------
 // Ads carousel
 // -------------------------
-let ads = [];
-let currentIndex = 0;
-let carouselInterval;
+let adsImages = [],
+    currentAd = 0;
 
 async function loadAds() {
     try {
         const res = await fetch('/api/ads');
         const data = await res.json();
+        
+        console.log("Ads data received:", data); // Log the full data object
 
-        if (data.success && data.ads.length > 0) {
-            ads = data.ads;
+        if (data.success) {
+            adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
-            carousel.innerHTML = '';
-            
-            // Set up main carousel container for fixed size and relative positioning
-            carousel.style.position = 'relative';
-            carousel.style.width = '100%';
-            carousel.style.maxWidth = '600px'; 
-            carousel.style.margin = '0 auto'; 
-            carousel.style.overflow = 'hidden';
-            carousel.style.height = '200px'; 
-            
-            const carouselInner = document.createElement('div');
-            carouselInner.style.display = 'flex';
-            carouselInner.style.width = `${ads.length * 100}%`;
-            carouselInner.style.height = '100%';
-            carouselInner.style.transition = 'transform 0.5s ease-in-out';
-            
-            ads.forEach((ad, i) => {
-                const img = document.createElement('img');
-                
-                // --- Diagnostic checks ---
-                console.log(`Loading image for ad #${i + 1}: ${ad.image}`);
-                img.onerror = () => {
-                    console.error(`Error loading image for ad #${i + 1} from URL: ${ad.image}`);
-                    // Optionally set a placeholder image or style to indicate an error
-                    img.src = 'https://placehold.co/250x150/EEEEEE/333333?text=Image+Not+Found';
-                };
-                
-                img.src = ad.image;
-                img.alt = ad.title;
-                img.style.width = `${100 / ads.length}%`;
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-                img.style.cursor = 'pointer';
+            carousel.innerHTML = ''; // Clear previous ads
 
+            adsImages.forEach((ad, i) => {
+                const img = document.createElement('img');
+                img.src = ad.image;
+                img.alt = ad.title; // Add alt text for accessibility
+                img.style.opacity = i === 0 ? 1 : 0; // Initially highlight the first image
+
+                // The fix: Use a proper event listener with a closure
                 img.addEventListener('click', () => {
+                    console.log(`Clicked on ad: ${ad.title}`);
                     showAd(ad.html, ad.title);
                 });
-                
-                carouselInner.appendChild(img);
+
+                carousel.appendChild(img);
             });
-            
-            carousel.appendChild(carouselInner);
 
-            if (ads.length > 1) {
-                const prevBtn = document.createElement('button');
-                prevBtn.textContent = '<';
-                prevBtn.addEventListener('click', () => moveCarousel(-1));
-                
-                const nextBtn = document.createElement('button');
-                nextBtn.textContent = '>';
-                nextBtn.addEventListener('click', () => moveCarousel(1));
-
-                const btnStyle = `
-                    position: absolute;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    background-color: rgba(0,0,0,0.5);
-                    color: white;
-                    border: none;
-                    font-size: 24px;
-                    cursor: pointer;
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 10;
-                `;
-                prevBtn.style.cssText = btnStyle + 'left: 10px;';
-                nextBtn.style.cssText = btnStyle + 'right: 10px;';
-
-                carousel.appendChild(prevBtn);
-                carousel.appendChild(nextBtn);
-
-                clearInterval(carouselInterval);
-                carouselInterval = setInterval(() => moveCarousel(1), 5000);
+            // Optional: Cycle through ads every 10 seconds
+            if (adsImages.length > 1) {
+                setInterval(nextAd, 10000);
             }
-
         }
     } catch (e) {
         console.error("Error loading ads:", e);
     }
 }
 
-function moveCarousel(direction) {
-    const carouselInner = document.querySelector("#adsCarousel > div");
-    if (!carouselInner || ads.length === 0) return;
-
-    currentIndex = (currentIndex + direction + ads.length) % ads.length;
-    carouselInner.style.transform = `translateX(-${currentIndex * 100}%)`;
+// Function to cycle ads in the carousel
+function nextAd() {
+    if (adsImages.length < 2) return;
+    const imgs = document.querySelectorAll("#adsCarousel img");
+    imgs[currentAd].style.opacity = 0;
+    currentAd = (currentAd + 1) % adsImages.length;
+    imgs[currentAd].style.opacity = 1;
 }
 
+// Function to display the content for the clicked ad
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
+
+    // Clear previous content before inserting new HTML
     fullContent.innerHTML = '';
+
+    // Inject the raw HTML directly into the container
     fullContent.innerHTML = html;
+
+    // Show the full-page overlay
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
         fullPage.style.display = "block";
     }
+
+    // Set the page title to the ad's title
     document.title = title || 'Ad - Student Portal';
+
+    // Push a history state for browser back
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
 
+
+// Close the full-page overlay when the user clicks outside the content
 window.onclick = function(event) {
     const fullPage = document.getElementById("fullPage");
     if (event.target === fullPage) {
@@ -268,6 +225,7 @@ window.onclick = function(event) {
     }
 };
 
+// Close the full-page overlay
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
@@ -276,6 +234,7 @@ function closeFullPage() {
     history.back();
 }
 
+// Handle browser back button
 window.onpopstate = function(event) {
     const overlay = document.getElementById("fullPage");
     if (overlay && overlay.style.display === "block") {
