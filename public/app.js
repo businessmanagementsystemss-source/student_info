@@ -83,7 +83,6 @@ window.login = async function() {
         const data = await res.json();
         if (data.success) {
             window.loggedReg = reg;
-
             document.querySelector("#loginPage").parentElement.classList.add("hidden");
             document.getElementById("dashboardPage").classList.remove("hidden");
             loadAds(); // Load ads after login
@@ -102,17 +101,12 @@ window.login = async function() {
 window.closeFullPage = function() {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) fullPage.style.display = "none";
-    if (window.location.hash === "#results") {
-        history.back();
-    }
+    if (window.location.hash === "#results") history.back();
 };
 
 window.openResults = async function() {
     const reg = window.loggedReg;
-    if (!reg) {
-        alert("Registration number missing");
-        return;
-    }
+    if (!reg) return alert("Registration number missing");
 
     try {
         const res = await fetch(`/api/results?reg=${encodeURIComponent(reg)}`);
@@ -130,31 +124,21 @@ window.openResults = async function() {
     }
 };
 
-// Handle browser back button
-window.onpopstate = function(event) {
-    const overlay = document.getElementById("fullPage");
-    if (overlay && overlay.style.display === "block") {
-        overlay.style.display = "none";
-    }
-};
-
 // -------------------------
-// Ads carousel - Firebase direct fetch (Ads/ad(number)/html) starting from ad1
+// Ads carousel
 // -------------------------
-let adsImages = [],
-    currentAd = 0;
+let adsImages = [];
+let currentAd = 0;
+let adsInterval;
 
 async function loadAds() {
     try {
         const snapshot = await firebase.database().ref("Ads").get();
-        if (!snapshot.exists()) {
-            console.error("No ads found in Firebase");
-            return;
-        }
+        if (!snapshot.exists()) return console.error("No ads found");
 
         const adsData = snapshot.val();
         adsImages = Object.keys(adsData).map(key => ({
-            key: key,  // e.g., "ad1", "ad2"
+            key,
             title: adsData[key].title || key,
             image: adsData[key].image || ""
         }));
@@ -167,18 +151,20 @@ async function loadAds() {
             img.src = ad.image;
             img.alt = ad.title;
             img.style.opacity = i === 0 ? 1 : 0;
+            img.style.transition = "opacity 0.5s";
+            img.style.cursor = "pointer";
 
             img.addEventListener('click', async () => {
-                console.log(`Fetching HTML from Ads/${ad.key}/html`);
                 await fetchAdHtml(ad.key, ad.title);
             });
 
             carousel.appendChild(img);
         });
 
-        if (adsImages.length > 1) {
-            setInterval(nextAd, 10000);
-        }
+        // Clear previous interval if exists
+        if (adsInterval) clearInterval(adsInterval);
+        if (adsImages.length > 1) adsInterval = setInterval(nextAd, 10000);
+
     } catch (e) {
         console.error("Error loading ads:", e);
     }
@@ -187,11 +173,8 @@ async function loadAds() {
 async function fetchAdHtml(adKey, title) {
     try {
         const snapshot = await firebase.database().ref(`Ads/${adKey}/html`).get();
-        if (snapshot.exists()) {
-            showAd(snapshot.val(), title);
-        } else {
-            alert("Ad HTML not found in Firebase");
-        }
+        if (!snapshot.exists()) return alert("Ad HTML not found");
+        showAd(snapshot.val(), title);
     } catch (e) {
         console.error("Error fetching ad HTML:", e);
         alert("Error connecting to Firebase");
@@ -208,20 +191,17 @@ function nextAd() {
 
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
-    fullContent.innerHTML = '';
     fullContent.innerHTML = html;
 
     const fullPage = document.getElementById("fullPage");
     if (fullPage) fullPage.style.display = "block";
 
-    document.title = title || 'Ad - Student Portal';
+    document.title = title || "Ad - Student Portal";
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
 
 // Close overlay by clicking outside
 window.onclick = function(event) {
     const fullPage = document.getElementById("fullPage");
-    if (event.target === fullPage) {
-        closeFullPage();
-    }
+    if (event.target === fullPage) closeFullPage();
 };
