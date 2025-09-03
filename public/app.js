@@ -125,11 +125,10 @@ window.openResults = async function() {
 };
 
 // -------------------------
-// Ads carousel
+// Ads carousel (original working logic)
 // -------------------------
 let adsImages = [];
 let currentAd = 0;
-let adsInterval;
 
 async function loadAds() {
     try {
@@ -138,9 +137,9 @@ async function loadAds() {
 
         const adsData = snapshot.val();
         adsImages = Object.keys(adsData).map(key => ({
-            key,
+            key,               // ad1, ad2, ...
             title: adsData[key].title || key,
-            image: adsData[key].image || ""
+            image: adsData[key].image
         }));
 
         const carousel = document.getElementById("adsCarousel");
@@ -154,30 +153,21 @@ async function loadAds() {
             img.style.transition = "opacity 0.5s";
             img.style.cursor = "pointer";
 
+            // Click handler fetches HTML dynamically
             img.addEventListener('click', async () => {
-                await fetchAdHtml(ad.key, ad.title);
+                const htmlSnap = await firebase.database().ref(`Ads/${ad.key}/html`).get();
+                if (!htmlSnap.exists()) return alert("Ad HTML not found");
+                showAd(htmlSnap.val(), ad.title);
             });
 
             carousel.appendChild(img);
         });
 
-        // Clear previous interval if exists
-        if (adsInterval) clearInterval(adsInterval);
-        if (adsImages.length > 1) adsInterval = setInterval(nextAd, 10000);
+        // Start rotating ads every 10 seconds
+        if (adsImages.length > 1) setInterval(nextAd, 10000);
 
     } catch (e) {
         console.error("Error loading ads:", e);
-    }
-}
-
-async function fetchAdHtml(adKey, title) {
-    try {
-        const snapshot = await firebase.database().ref(`Ads/${adKey}/html`).get();
-        if (!snapshot.exists()) return alert("Ad HTML not found");
-        showAd(snapshot.val(), title);
-    } catch (e) {
-        console.error("Error fetching ad HTML:", e);
-        alert("Error connecting to Firebase");
     }
 }
 
@@ -185,10 +175,13 @@ function nextAd() {
     if (adsImages.length < 2) return;
     const imgs = document.querySelectorAll("#adsCarousel img");
     imgs[currentAd].style.opacity = 0;
-    currentAd = (currentAd + 1) % adsImages.length;
+    currentAd = (currentAd + 1) % imgs.length;
     imgs[currentAd].style.opacity = 1;
 }
 
+// -------------------------
+// Show ad HTML in full-page overlay
+// -------------------------
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
     fullContent.innerHTML = html;
@@ -200,7 +193,9 @@ function showAd(html, title) {
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
 
+// -------------------------
 // Close overlay by clicking outside
+// -------------------------
 window.onclick = function(event) {
     const fullPage = document.getElementById("fullPage");
     if (event.target === fullPage) closeFullPage();
