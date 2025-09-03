@@ -82,7 +82,6 @@ window.login = async function() {
         });
         const data = await res.json();
         if (data.success) {
-            // Store logged-in reg number for results
             window.loggedReg = reg;
 
             document.querySelector("#loginPage").parentElement.classList.add("hidden");
@@ -101,8 +100,8 @@ window.login = async function() {
 // Full-page overlay
 // -------------------------
 window.closeFullPage = function() {
-    document.getElementById("fullPage").style.display = "none";
-    // Remove the history state when closing overlay
+    const fullPage = document.getElementById("fullPage");
+    if (fullPage) fullPage.style.display = "none";
     if (window.location.hash === "#results") {
         history.back();
     }
@@ -121,8 +120,6 @@ window.openResults = async function() {
         if (data.success) {
             document.getElementById("fullContent").innerHTML = data.html;
             document.getElementById("fullPage").style.display = "block";
-
-            // Push a history state for browser back button
             history.pushState({ page: 'results' }, '', '#results');
         } else {
             alert(data.error);
@@ -136,55 +133,71 @@ window.openResults = async function() {
 // Handle browser back button
 window.onpopstate = function(event) {
     const overlay = document.getElementById("fullPage");
-    if (overlay.style.display === "block") {
+    if (overlay && overlay.style.display === "block") {
         overlay.style.display = "none";
     }
 };
 
 // -------------------------
-// Ads carousel - Fixed version
+// Ads carousel - Firebase direct fetch (Ads/ad(number)/html) starting from ad1
 // -------------------------
 let adsImages = [],
     currentAd = 0;
 
 async function loadAds() {
     try {
-        const res = await fetch('/api/ads');
-        const data = await res.json();
-        
-        console.log("Ads data received:", data);
+        const snapshot = await firebase.database().ref("Ads").get();
+        if (!snapshot.exists()) {
+            console.error("No ads found in Firebase");
+            return;
+        }
 
-        if (data.success) {
-            adsImages = data.ads;
-            const carousel = document.getElementById("adsCarousel");
-            carousel.innerHTML = ''; // Clear previous ads
+        const adsData = snapshot.val();
+        adsImages = Object.keys(adsData).map(key => ({
+            key: key,  // e.g., "ad1", "ad2"
+            title: adsData[key].title || key,
+            image: adsData[key].image || ""
+        }));
 
-            adsImages.forEach((ad, i) => {
-                const img = document.createElement('img');
-                img.src = ad.image;
-                img.alt = ad.title;
-                img.style.opacity = i === 0 ? 1 : 0;
+        const carousel = document.getElementById("adsCarousel");
+        carousel.innerHTML = '';
 
-                // 🔹 Attach click handler directly to each ad
-                img.addEventListener('click', () => {
-                    console.log(`Clicked on ad: ${ad.title}`);
-                    showAd(ad.html, ad.title);
-                });
+        adsImages.forEach((ad, i) => {
+            const img = document.createElement('img');
+            img.src = ad.image;
+            img.alt = ad.title;
+            img.style.opacity = i === 0 ? 1 : 0;
 
-                carousel.appendChild(img);
+            img.addEventListener('click', async () => {
+                console.log(`Fetching HTML from Ads/${ad.key}/html`);
+                await fetchAdHtml(ad.key, ad.title);
             });
 
-            // Optional: Cycle through ads every 10 seconds
-            if (adsImages.length > 1) {
-                setInterval(nextAd, 10000);
-            }
+            carousel.appendChild(img);
+        });
+
+        if (adsImages.length > 1) {
+            setInterval(nextAd, 10000);
         }
     } catch (e) {
         console.error("Error loading ads:", e);
     }
 }
 
-// Function to cycle ads in the carousel
+async function fetchAdHtml(adKey, title) {
+    try {
+        const snapshot = await firebase.database().ref(`Ads/${adKey}/html`).get();
+        if (snapshot.exists()) {
+            showAd(snapshot.val(), title);
+        } else {
+            alert("Ad HTML not found in Firebase");
+        }
+    } catch (e) {
+        console.error("Error fetching ad HTML:", e);
+        alert("Error connecting to Firebase");
+    }
+}
+
 function nextAd() {
     if (adsImages.length < 2) return;
     const imgs = document.querySelectorAll("#adsCarousel img");
@@ -193,50 +206,22 @@ function nextAd() {
     imgs[currentAd].style.opacity = 1;
 }
 
-// Function to display the content for the clicked ad
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
-    
-    // Clear previous content before inserting new HTML
     fullContent.innerHTML = '';
-    
-    // Inject the raw HTML directly into the container
     fullContent.innerHTML = html;
-    
-    // Show the full-page overlay
+
     const fullPage = document.getElementById("fullPage");
-    if (fullPage) {
-        fullPage.style.display = "block";
-    }
-    
-    // Set the page title to the ad's title
+    if (fullPage) fullPage.style.display = "block";
+
     document.title = title || 'Ad - Student Portal';
-    
-    // Push a history state for browser back
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
 
-// Close the full-page overlay when the user clicks outside the content
+// Close overlay by clicking outside
 window.onclick = function(event) {
     const fullPage = document.getElementById("fullPage");
     if (event.target === fullPage) {
         closeFullPage();
-    }
-};
-
-// Close the full-page overlay
-function closeFullPage() {
-    const fullPage = document.getElementById("fullPage");
-    if (fullPage) {
-        fullPage.style.display = "none";
-    }
-    history.back();
-}
-
-// Handle browser back button
-window.onpopstate = function(event) {
-    const overlay = document.getElementById("fullPage");
-    if (overlay && overlay.style.display === "block") {
-        overlay.style.display = "none";
     }
 };
