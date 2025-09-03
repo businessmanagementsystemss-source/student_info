@@ -102,7 +102,6 @@ window.login = async function() {
 // -------------------------
 window.closeFullPage = function() {
     document.getElementById("fullPage").style.display = "none";
-    // Remove the history state when closing overlay
     if (window.location.hash === "#results") {
         history.back();
     }
@@ -121,8 +120,6 @@ window.openResults = async function() {
         if (data.success) {
             document.getElementById("fullContent").innerHTML = data.html;
             document.getElementById("fullPage").style.display = "block";
-
-            // Push a history state for browser back button
             history.pushState({ page: 'results' }, '', '#results');
         } else {
             alert(data.error);
@@ -141,7 +138,6 @@ window.onpopstate = function(event) {
     }
 };
 
-// -------------------------
 // -------------------------
 // Ads carousel - Fixed version
 // -------------------------
@@ -165,24 +161,16 @@ async function loadAds() {
                 img.src = ad.image;
                 img.alt = ad.title;
                 img.style.opacity = i === 0 ? 1 : 0;
-                
-                // Store the ad data as a data attribute
-                img.dataset.adIndex = i;
-                
+
+                // 🔹 Fix: attach click directly to this image
+                img.addEventListener('click', () => {
+                    console.log(`Clicked on ad: ${ad.title}`);
+                    showAd(ad.html, ad.title);
+                });
+
                 carousel.appendChild(img);
             });
 
-            // Add a single event listener to the carousel (event delegation)
-            carousel.addEventListener('click', (e) => {
-                if (e.target.tagName === 'IMG') {
-                    const adIndex = parseInt(e.target.dataset.adIndex);
-                    const ad = adsImages[adIndex];
-                    console.log(`Clicked on ad: ${ad.title}`);
-                    showAd(ad.html, ad.title);
-                }
-            });
-
-            // Optional: Cycle through ads every 10 seconds
             if (adsImages.length > 1) {
                 setInterval(nextAd, 10000);
             }
@@ -204,28 +192,19 @@ function nextAd() {
 // Function to display the content for the clicked ad
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
-    
-    // Clear previous content before inserting new HTML
     fullContent.innerHTML = '';
-    
-    // Inject the raw HTML directly into the container
     fullContent.innerHTML = html;
-    
-    // Show the full-page overlay
+
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
         fullPage.style.display = "block";
     }
-    
-    // Set the page title to the ad's title
+
     document.title = title || 'Ad - Student Portal';
-    
-    // Push a history state for browser back
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
 
-
-// Close the full-page overlay when the user clicks outside the content
+// Close overlay when clicking outside content
 window.onclick = function(event) {
     const fullPage = document.getElementById("fullPage");
     if (event.target === fullPage) {
@@ -233,7 +212,7 @@ window.onclick = function(event) {
     }
 };
 
-// Close the full-page overlay
+// Close overlay
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
@@ -248,4 +227,4 @@ window.onpopstate = function(event) {
     if (overlay && overlay.style.display === "block") {
         overlay.style.display = "none";
     }
-}; i have problem with ads that shown when click always show html of single ads even i click another ads
+};
