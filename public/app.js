@@ -3,14 +3,14 @@
 // -------------------------
 
 // Toggle between login and register pages
-window.showPage = function(pageId) {
+window.showPage = function (pageId) {
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("registerPage").classList.add("hidden");
     document.getElementById(pageId).classList.remove("hidden");
 };
 
 // Toggle password visibility
-window.togglePassword = function(fieldId, icon) {
+window.togglePassword = function (fieldId, icon) {
     const field = document.getElementById(fieldId);
     if (field.type === "password") {
         field.type = "text";
@@ -24,7 +24,7 @@ window.togglePassword = function(fieldId, icon) {
 // -------------------------
 // Registration
 // -------------------------
-window.register = async function() {
+window.register = async function () {
     const name = document.getElementById("fullName").value.trim();
     const reg = document.getElementById("regNumber").value.trim();
     const email = document.getElementById("email").value.trim();
@@ -65,7 +65,7 @@ window.register = async function() {
 // -------------------------
 // Login
 // -------------------------
-window.login = async function() {
+window.login = async function () {
     const reg = document.getElementById("loginReg").value.trim();
     const pass = document.getElementById("loginPass").value;
 
@@ -82,12 +82,10 @@ window.login = async function() {
         });
         const data = await res.json();
         if (data.success) {
-            // Store logged-in reg number for results
             window.loggedReg = reg;
-
             document.querySelector("#loginPage").parentElement.classList.add("hidden");
             document.getElementById("dashboardPage").classList.remove("hidden");
-            loadAds(); // Load ads after login
+            loadAds(); // load ads after login
         } else {
             alert(data.error);
         }
@@ -98,16 +96,9 @@ window.login = async function() {
 };
 
 // -------------------------
-// Full-page overlay
+// Results
 // -------------------------
-window.closeFullPage = function() {
-    document.getElementById("fullPage").style.display = "none";
-    if (window.location.hash === "#results") {
-        history.back();
-    }
-};
-
-window.openResults = async function() {
+window.openResults = async function () {
     const reg = window.loggedReg;
     if (!reg) {
         alert("Registration number missing");
@@ -130,31 +121,46 @@ window.openResults = async function() {
     }
 };
 
-// Handle browser back button
-window.onpopstate = function(event) {
+// -------------------------
+// Overlay
+// -------------------------
+window.closeFullPage = function () {
+    const fullPage = document.getElementById("fullPage");
+    if (fullPage) fullPage.style.display = "none";
+    if (window.location.hash === "#results" || window.location.hash === "#ads") {
+        history.back();
+    }
+};
+
+window.onpopstate = function () {
     const overlay = document.getElementById("fullPage");
-    if (overlay.style.display === "block") {
+    if (overlay && overlay.style.display === "block") {
         overlay.style.display = "none";
+    }
+};
+
+window.onclick = function (event) {
+    const fullPage = document.getElementById("fullPage");
+    if (event.target === fullPage) {
+        closeFullPage();
     }
 };
 
 // -------------------------
 // Ads carousel
 // -------------------------
-let adsImages = [],
-    currentAd = 0;
+let adsImages = [], currentAd = 0;
 
 async function loadAds() {
     try {
         const res = await fetch('/api/ads');
         const data = await res.json();
-        
-        console.log("Ads data received:", data);
+        console.log("📢 Ads data received:", data);
 
         if (data.success) {
             adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
-            carousel.innerHTML = ''; // Clear previous ads
+            carousel.innerHTML = '';
 
             adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
@@ -162,10 +168,10 @@ async function loadAds() {
                 img.alt = ad.title || `Ad ${ad.id}`;
                 img.style.opacity = i === 0 ? 1 : 0;
 
-                // 🔹 Fix: normalize ad ID (works for "1" → "ad1")
+                // Fix: prefix ad id if needed
                 img.addEventListener('click', () => {
                     const firebaseAdId = ad.id.startsWith("ad") ? ad.id : `ad${ad.id}`;
-                    console.log(`Clicked on ad: ${firebaseAdId}`);
+                    console.log(`🖱️ Clicked ad: ${firebaseAdId}`);
                     fetchAdHtml(firebaseAdId);
                 });
 
@@ -181,20 +187,17 @@ async function loadAds() {
     }
 }
 
-// -------------------------
-// Fetch ad HTML from Firebase
-// -------------------------
+// Fetch ad HTML string from Firebase
 async function fetchAdHtml(adId) {
     try {
         const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/${adId}/html.json`;
-        
-        const response = await fetch(firebaseUrl);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        console.log("📡 Fetching:", firebaseUrl);
 
-        const htmlContent = await response.json(); // returns a string
-        console.log("🔥 Firebase htmlContent:", htmlContent);
+        const response = await fetch(firebaseUrl);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+        const htmlContent = await response.json(); // returns the string
+        console.log("🔥 Firebase returned:", htmlContent);
 
         if (htmlContent && typeof htmlContent === "string" && htmlContent.trim() !== "") {
             showAd(htmlContent, `Ad ${adId}`);
@@ -207,9 +210,7 @@ async function fetchAdHtml(adId) {
     }
 }
 
-// -------------------------
-// Carousel rotation
-// -------------------------
+// Rotate ads
 function nextAd() {
     if (adsImages.length < 2) return;
     const imgs = document.querySelectorAll("#adsCarousel img");
@@ -218,36 +219,18 @@ function nextAd() {
     imgs[currentAd].style.opacity = 1;
 }
 
-// -------------------------
-// Show ad overlay
-// -------------------------
+// Display ad overlay
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
-    fullContent.innerHTML = html;
+    fullContent.innerHTML = "";
+
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = html; // inject ad HTML
+    fullContent.appendChild(wrapper);
 
     const fullPage = document.getElementById("fullPage");
-    if (fullPage) {
-        fullPage.style.display = "block";
-    }
+    if (fullPage) fullPage.style.display = "block";
 
-    document.title = title || 'Ad - Student Portal';
-    history.pushState({ page: 'ads', title: title }, '', '#ads');
-}
-
-// -------------------------
-// Overlay close handlers
-// -------------------------
-window.onclick = function(event) {
-    const fullPage = document.getElementById("fullPage");
-    if (event.target === fullPage) {
-        closeFullPage();
-    }
-};
-
-function closeFullPage() {
-    const fullPage = document.getElementById("fullPage");
-    if (fullPage) {
-        fullPage.style.display = "none";
-    }
-    history.back();
+    document.title = title || "Ad - Student Portal";
+    history.pushState({ page: "ads", title: title }, "", "#ads");
 }
