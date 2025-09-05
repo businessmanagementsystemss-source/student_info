@@ -150,6 +150,7 @@ window.onclick = function (event) {
 // Ads carousel
 // -------------------------
 let adsImages = [], currentAd = 0;
+let adInterval;
 
 async function loadAds() {
     try {
@@ -168,18 +169,21 @@ async function loadAds() {
                 img.alt = ad.title || `Ad ${ad.id}`;
                 img.style.opacity = i === 0 ? 1 : 0;
 
-                // Fix: prefix ad id if needed
-                img.addEventListener('click', () => {
-                    const firebaseAdId = ad.id.startsWith("ad") ? ad.id : `ad${ad.id}`;
-                    console.log(`🖱️ Clicked ad: ${firebaseAdId}`);
-                    fetchAdHtml(firebaseAdId);
-                });
+                // ✅ Correct closure: capture ad.id for this listener
+                img.addEventListener('click', ((adId) => {
+                    return () => {
+                        console.log(`🖱️ Clicked ad: ${adId}`);
+                        fetchAdHtml(adId);
+                    };
+                })(ad.id));
 
                 carousel.appendChild(img);
             });
 
+            // Clear previous interval if exists
+            if (adInterval) clearInterval(adInterval);
             if (adsImages.length > 1) {
-                setInterval(nextAd, 10000);
+                adInterval = setInterval(nextAd, 10000);
             }
         }
     } catch (e) {
@@ -196,11 +200,11 @@ async function fetchAdHtml(adId) {
         const response = await fetch(firebaseUrl);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-        const htmlContent = await response.json(); // returns the string
+        const htmlContent = await response.json();
         console.log("🔥 Firebase returned:", htmlContent);
 
         if (htmlContent && typeof htmlContent === "string" && htmlContent.trim() !== "") {
-            showAd(htmlContent, `Ad ${adId}`);
+            showAd(htmlContent);
         } else {
             alert("Ad content not available");
         }
@@ -222,13 +226,8 @@ function nextAd() {
 // Display ad overlay
 function showAd(html) {
     const fullContent = document.getElementById("fullContent");
-    fullContent.innerHTML = "";
-
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = html; // inject ad HTML
-    fullContent.appendChild(wrapper);
+    fullContent.innerHTML = html;
 
     const fullPage = document.getElementById("fullPage");
     if (fullPage) fullPage.style.display = "block";
-
 }
