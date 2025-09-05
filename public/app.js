@@ -165,7 +165,7 @@ async function loadAds() {
                 // 🔹 Fix: attach click directly to this image
                 img.addEventListener('click', () => {
                     console.log(`Clicked on ad: ${ad.title}`);
-                    showAd(ad.html, ad.title);
+                    fetchAdHtml(ad.id); // Fetch HTML from Firebase based on ad ID
                 });
 
                 carousel.appendChild(img);
@@ -177,6 +177,27 @@ async function loadAds() {
         }
     } catch (e) {
         console.error("Error loading ads:", e);
+    }
+}
+
+// Function to fetch ad HTML from Firebase
+async function fetchAdHtml(adId) {
+    try {
+        // Replace with your Firebase URL structure
+        const firebaseUrl = `https://your-project-id.firebaseio.com/ads/ad${adId}/html.json`;
+        
+        const response = await fetch(firebaseUrl);
+        const htmlContent = await response.json();
+        
+        if (htmlContent) {
+            showAd(htmlContent, `Ad ${adId}`);
+        } else {
+            console.error("No HTML content found for ad:", adId);
+            alert("Ad content not available");
+        }
+    } catch (error) {
+        console.error("Error fetching ad HTML:", error);
+        alert("Error loading ad content");
     }
 }
 
