@@ -180,7 +180,7 @@ async function loadAds() {
 // ✅ Function to fetch ad HTML from Firebase Realtime Database
 async function fetchAdHtml(adId) {
     try {
-        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/${adId}/html.json`;
+        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/${adId}/html`;
         const response = await fetch(firebaseUrl);
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
