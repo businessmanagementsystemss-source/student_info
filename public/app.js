@@ -183,33 +183,56 @@ async function loadAds() {
 // Function to fetch ad HTML from Firebase Realtime Database
 async function fetchAdHtml(adId) {
     try {
+        // Replace with your actual Firebase project ID
         const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/ad${adId}/html.json`;
         
         const response = await fetch(firebaseUrl);
-        const result = await response.json();
         
-        console.log("Raw Firebase response:", result);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
-        // Handle different response scenarios
-        if (result === null) {
-            console.error("Ad content is null for ad:", adId);
+        // Get the response as text first to see the raw data
+        const rawData = await response.text();
+        console.log("Raw Firebase response:", rawData);
+        
+        // Parse the JSON response
+        let htmlContent;
+        try {
+            htmlContent = JSON.parse(rawData);
+        } catch (parseError) {
+            console.error("JSON parse error:", parseError);
+            // If parsing fails, use the raw data directly
+            htmlContent = rawData;
+        }
+        
+        console.log("Processed HTML content:", htmlContent);
+        
+        // Handle the content - remove surrounding quotes and unescape
+        if (htmlContent !== null && htmlContent !== undefined && htmlContent !== "null") {
+            let processedHtml = htmlContent;
+            
+            // Remove surrounding quotes if present
+            if (typeof processedHtml === 'string') {
+                if (processedHtml.startsWith('"') && processedHtml.endsWith('"')) {
+                    processedHtml = processedHtml.slice(1, -1);
+                }
+                // Unescape characters
+                processedHtml = processedHtml.replace(/\\"/g, '"')
+                                            .replace(/\\n/g, '\n')
+                                            .replace(/\\t/g, '\t')
+                                            .replace(/\\'/g, "'");
+            }
+            
+            if (processedHtml.trim() !== "") {
+                showAd(processedHtml, `Ad ${adId}`);
+            } else {
+                console.error("Empty HTML content for ad:", adId);
+                alert("Ad content is empty");
+            }
+        } else {
+            console.error("No HTML content found for ad:", adId);
             alert("Ad content not available");
-            return;
-        }
-        
-        // If it's a string (which HTML should be), use it directly
-        if (typeof result === 'string') {
-            // Firebase might escape quotes, so we unescape them
-            const htmlContent = result.replace(/\\"/g, '"').replace(/\\n/g, '\n');
-            showAd(htmlContent, `Ad ${adId}`);
-        } 
-        // If it's an object with html property (less common but possible)
-        else if (typeof result === 'object' && result.html) {
-            showAd(result.html, `Ad ${adId}`);
-        }
-        else {
-            console.error("Unexpected response format for ad:", adId, result);
-            alert("Ad content format error");
         }
     } catch (error) {
         console.error("Error fetching ad HTML:", error);
