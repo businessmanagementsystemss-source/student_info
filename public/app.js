@@ -184,7 +184,7 @@ async function loadAds() {
 async function fetchAdHtml(adId) {
     try {
         // Replace with your Firebase URL structure
-        const firebaseUrl = `https://your-project-id.firebaseio.com/ads/ad${adId}/html.json`;
+        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com//ads/ad${adId}/html.json`;
         
         const response = await fetch(firebaseUrl);
         const htmlContent = await response.json();
