@@ -192,7 +192,7 @@ async function loadAds() {
 // Fetch ad HTML string from Firebase
 async function fetchAdHtml(adId) {
     try {
-        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/${adId}/html.json`;
+        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/ad{adId}/html.json`;
         console.log("📡 Fetching:", firebaseUrl);
 
         const response = await fetch(firebaseUrl);
