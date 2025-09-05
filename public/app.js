@@ -3,14 +3,14 @@
 // -------------------------
 
 // Toggle between login and register pages
-window.showPage = function (pageId) {
+window.showPage = function(pageId) {
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("registerPage").classList.add("hidden");
     document.getElementById(pageId).classList.remove("hidden");
 };
 
 // Toggle password visibility
-window.togglePassword = function (fieldId, icon) {
+window.togglePassword = function(fieldId, icon) {
     const field = document.getElementById(fieldId);
     if (field.type === "password") {
         field.type = "text";
@@ -24,7 +24,7 @@ window.togglePassword = function (fieldId, icon) {
 // -------------------------
 // Registration
 // -------------------------
-window.register = async function () {
+window.register = async function() {
     const name = document.getElementById("fullName").value.trim();
     const reg = document.getElementById("regNumber").value.trim();
     const email = document.getElementById("email").value.trim();
@@ -65,7 +65,7 @@ window.register = async function () {
 // -------------------------
 // Login
 // -------------------------
-window.login = async function () {
+window.login = async function() {
     const reg = document.getElementById("loginReg").value.trim();
     const pass = document.getElementById("loginPass").value;
 
@@ -82,10 +82,12 @@ window.login = async function () {
         });
         const data = await res.json();
         if (data.success) {
+            // Store logged-in reg number for results
             window.loggedReg = reg;
+
             document.querySelector("#loginPage").parentElement.classList.add("hidden");
             document.getElementById("dashboardPage").classList.remove("hidden");
-            loadAds(); // load ads after login
+            loadAds(); // Load ads after login
         } else {
             alert(data.error);
         }
@@ -96,9 +98,16 @@ window.login = async function () {
 };
 
 // -------------------------
-// Results
+// Full-page overlay
 // -------------------------
-window.openResults = async function () {
+window.closeFullPage = function() {
+    document.getElementById("fullPage").style.display = "none";
+    if (window.location.hash === "#results") {
+        history.back();
+    }
+};
+
+window.openResults = async function() {
     const reg = window.loggedReg;
     if (!reg) {
         alert("Registration number missing");
@@ -121,67 +130,50 @@ window.openResults = async function () {
     }
 };
 
-// -------------------------
-// Overlay
-// -------------------------
-window.closeFullPage = function () {
-    const fullPage = document.getElementById("fullPage");
-    if (fullPage) fullPage.style.display = "none";
-    if (window.location.hash === "#results" || window.location.hash === "#ads") {
-        history.back();
-    }
-};
-
-window.onpopstate = function () {
+// Handle browser back button
+window.onpopstate = function(event) {
     const overlay = document.getElementById("fullPage");
-    if (overlay && overlay.style.display === "block") {
+    if (overlay.style.display === "block") {
         overlay.style.display = "none";
-    }
-};
-
-window.onclick = function (event) {
-    const fullPage = document.getElementById("fullPage");
-    if (event.target === fullPage) {
-        closeFullPage();
     }
 };
 
 // -------------------------
 // Ads carousel
 // -------------------------
-let adsImages = [], currentAd = 0;
-let adInterval;
+let adsImages = [],
+    currentAd = 0;
 
 async function loadAds() {
     try {
         const res = await fetch('/api/ads');
         const data = await res.json();
-        console.log("📢 Ads data received:", data);
+        
+        console.log("Ads data received:", data);
 
         if (data.success) {
             adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
-            carousel.innerHTML = '';
+            carousel.innerHTML = ''; // Clear previous ads
 
             adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
                 img.src = ad.image;
                 img.alt = ad.title || `Ad ${ad.id}`;
                 img.style.opacity = i === 0 ? 1 : 0;
-                img.style.transition = "opacity 1s ease";
 
-                // Correct closure to ensure each ad's HTML loads correctly
-                img.addEventListener('click', ((adId) => {
-                    return () => fetchAdHtml(adId);
-                })(ad.id));
+                // 🔹 Fix: normalize ad ID (works for "1" → "ad1")
+                img.addEventListener('click', () => {
+                    const firebaseAdId = ad.id.startsWith("ad") ? ad.id : `ad${ad.id}`;
+                    console.log(`Clicked on ad: ${firebaseAdId}`);
+                    fetchAdHtml(firebaseAdId);
+                });
 
                 carousel.appendChild(img);
             });
 
-            // Clear previous interval if any
-            if (adInterval) clearInterval(adInterval);
             if (adsImages.length > 1) {
-                adInterval = setInterval(nextAd, 10000);
+                setInterval(nextAd, 10000);
             }
         }
     } catch (e) {
@@ -189,22 +181,24 @@ async function loadAds() {
     }
 }
 
-// Fetch ad HTML string from Firebase
+// -------------------------
+// Fetch ad HTML from Firebase
+// -------------------------
 async function fetchAdHtml(adId) {
     try {
-        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/ad{adId}/html.json`;
-        console.log("📡 Fetching:", firebaseUrl);
-
+        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/${adId}/html.json`;
+        
         const response = await fetch(firebaseUrl);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-        const htmlContent = await response.json();
-        console.log("🔥 Firebase returned:", htmlContent);
+        const htmlContent = await response.json(); // returns a string
+        console.log("🔥 Firebase htmlContent:", htmlContent);
 
         if (htmlContent && typeof htmlContent === "string" && htmlContent.trim() !== "") {
-            showAd(htmlContent);
+            showAd(htmlContent, `Ad ${adId}`);
         } else {
-            console.error("⚠️ Ad HTML is empty or invalid");
             alert("Ad content not available");
         }
     } catch (error) {
@@ -213,7 +207,9 @@ async function fetchAdHtml(adId) {
     }
 }
 
-// Rotate ads
+// -------------------------
+// Carousel rotation
+// -------------------------
 function nextAd() {
     if (adsImages.length < 2) return;
     const imgs = document.querySelectorAll("#adsCarousel img");
@@ -222,11 +218,36 @@ function nextAd() {
     imgs[currentAd].style.opacity = 1;
 }
 
-// Display ad overlay
-function showAd(html) {
+// -------------------------
+// Show ad overlay
+// -------------------------
+function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
     fullContent.innerHTML = html;
 
     const fullPage = document.getElementById("fullPage");
-    if (fullPage) fullPage.style.display = "block";
+    if (fullPage) {
+        fullPage.style.display = "block";
+    }
+
+    document.title = title || 'Ad - Student Portal';
+    history.pushState({ page: 'ads', title: title }, '', '#ads');
+}
+
+// -------------------------
+// Overlay close handlers
+// -------------------------
+window.onclick = function(event) {
+    const fullPage = document.getElementById("fullPage");
+    if (event.target === fullPage) {
+        closeFullPage();
+    }
+};
+
+function closeFullPage() {
+    const fullPage = document.getElementById("fullPage");
+    if (fullPage) {
+        fullPage.style.display = "none";
+    }
+    history.back();
 }
