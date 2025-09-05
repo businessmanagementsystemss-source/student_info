@@ -82,7 +82,9 @@ window.login = async function() {
         });
         const data = await res.json();
         if (data.success) {
+            // Store logged-in reg number for results
             window.loggedReg = reg;
+
             document.querySelector("#loginPage").parentElement.classList.add("hidden");
             document.getElementById("dashboardPage").classList.remove("hidden");
             loadAds(); // Load ads after login
@@ -137,7 +139,7 @@ window.onpopstate = function(event) {
 };
 
 // -------------------------
-// Ads carousel - Fixed version
+// Ads carousel
 // -------------------------
 let adsImages = [],
     currentAd = 0;
@@ -146,12 +148,13 @@ async function loadAds() {
     try {
         const res = await fetch('/api/ads');
         const data = await res.json();
+        
         console.log("Ads data received:", data);
 
         if (data.success) {
             adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
-            carousel.innerHTML = '';
+            carousel.innerHTML = ''; // Clear previous ads
 
             adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
@@ -159,10 +162,10 @@ async function loadAds() {
                 img.alt = ad.title;
                 img.style.opacity = i === 0 ? 1 : 0;
 
-                // 🔹 Pass correct Firebase node name (ad1, ad2…)
+                // 🔹 Each image clickable → fetch HTML from Firebase
                 img.addEventListener('click', () => {
-                    console.log(`Clicked on ad: ${ad.title}`);
-                    fetchAdHtml(ad.id); 
+                    console.log(`Clicked on ad: ${ad.id}`);
+                    fetchAdHtml(ad.id); // Pass ad.id (e.g., "ad1", "ad2")
                 });
 
                 carousel.appendChild(img);
@@ -177,21 +180,27 @@ async function loadAds() {
     }
 }
 
-// ✅ Function to fetch ad HTML from Firebase Realtime Database
+// -------------------------
+// Fetch ad HTML from Firebase
+// -------------------------
 async function fetchAdHtml(adId) {
     try {
-        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/${adId}/html`;
+        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/${adId}/html.json`;
+        
         const response = await fetch(firebaseUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        // ✅ Firebase wraps HTML string in JSON → parse directly
+        const htmlContent = await response.json();
 
-        const htmlContent = await response.json(); // already a string
         console.log(`Fetched HTML for ${adId}:`, htmlContent);
 
-        if (htmlContent && htmlContent.trim() !== "") {
-            showAd(htmlContent, adId);
+        if (htmlContent && typeof htmlContent === "string" && htmlContent.trim() !== "") {
+            showAd(htmlContent, `Ad ${adId}`);
         } else {
-            console.error("Empty HTML content for:", adId);
+            console.error("No valid HTML content for ad:", adId);
             alert("Ad content not available");
         }
     } catch (error) {
@@ -200,7 +209,9 @@ async function fetchAdHtml(adId) {
     }
 }
 
-// Cycle ads
+// -------------------------
+// Carousel rotation
+// -------------------------
 function nextAd() {
     if (adsImages.length < 2) return;
     const imgs = document.querySelectorAll("#adsCarousel img");
@@ -209,7 +220,9 @@ function nextAd() {
     imgs[currentAd].style.opacity = 1;
 }
 
-// Show ad in overlay
+// -------------------------
+// Show ad overlay
+// -------------------------
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
     fullContent.innerHTML = html;
@@ -223,7 +236,9 @@ function showAd(html, title) {
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
 
-// Overlay close when clicking outside
+// -------------------------
+// Overlay close handlers
+// -------------------------
 window.onclick = function(event) {
     const fullPage = document.getElementById("fullPage");
     if (event.target === fullPage) {
@@ -231,17 +246,10 @@ window.onclick = function(event) {
     }
 };
 
-// Close overlay
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
-    if (fullPage) fullPage.style.display = "none";
+    if (fullPage) {
+        fullPage.style.display = "none";
+    }
     history.back();
 }
-
-// Handle back again
-window.onpopstate = function(event) {
-    const overlay = document.getElementById("fullPage");
-    if (overlay && overlay.style.display === "block") {
-        overlay.style.display = "none";
-    }
-};
