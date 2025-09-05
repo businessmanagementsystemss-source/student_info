@@ -180,20 +180,36 @@ async function loadAds() {
     }
 }
 
-// Function to fetch ad HTML from Firebase
+// Function to fetch ad HTML from Firebase Realtime Database
 async function fetchAdHtml(adId) {
     try {
-        // Replace with your Firebase URL structure
-        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com//ads/ad${adId}/html.json`;
+        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/ad${adId}/html.json`;
         
         const response = await fetch(firebaseUrl);
-        const htmlContent = await response.json();
+        const result = await response.json();
         
-        if (htmlContent) {
-            showAd(htmlContent, `Ad ${adId}`);
-        } else {
-            console.error("No HTML content found for ad:", adId);
+        console.log("Raw Firebase response:", result);
+        
+        // Handle different response scenarios
+        if (result === null) {
+            console.error("Ad content is null for ad:", adId);
             alert("Ad content not available");
+            return;
+        }
+        
+        // If it's a string (which HTML should be), use it directly
+        if (typeof result === 'string') {
+            // Firebase might escape quotes, so we unescape them
+            const htmlContent = result.replace(/\\"/g, '"').replace(/\\n/g, '\n');
+            showAd(htmlContent, `Ad ${adId}`);
+        } 
+        // If it's an object with html property (less common but possible)
+        else if (typeof result === 'object' && result.html) {
+            showAd(result.html, `Ad ${adId}`);
+        }
+        else {
+            console.error("Unexpected response format for ad:", adId, result);
+            alert("Ad content format error");
         }
     } catch (error) {
         console.error("Error fetching ad HTML:", error);
