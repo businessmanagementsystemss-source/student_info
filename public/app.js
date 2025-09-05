@@ -168,19 +168,17 @@ async function loadAds() {
                 img.src = ad.image;
                 img.alt = ad.title || `Ad ${ad.id}`;
                 img.style.opacity = i === 0 ? 1 : 0;
+                img.style.transition = "opacity 1s ease";
 
-                // ✅ Correct closure: capture ad.id for this listener
+                // Correct closure to ensure each ad's HTML loads correctly
                 img.addEventListener('click', ((adId) => {
-                    return () => {
-                        console.log(`🖱️ Clicked ad: ${adId}`);
-                        fetchAdHtml(adId);
-                    };
+                    return () => fetchAdHtml(adId);
                 })(ad.id));
 
                 carousel.appendChild(img);
             });
 
-            // Clear previous interval if exists
+            // Clear previous interval if any
             if (adInterval) clearInterval(adInterval);
             if (adsImages.length > 1) {
                 adInterval = setInterval(nextAd, 10000);
@@ -206,6 +204,7 @@ async function fetchAdHtml(adId) {
         if (htmlContent && typeof htmlContent === "string" && htmlContent.trim() !== "") {
             showAd(htmlContent);
         } else {
+            console.error("⚠️ Ad HTML is empty or invalid");
             alert("Ad content not available");
         }
     } catch (error) {
