@@ -82,9 +82,7 @@ window.login = async function() {
         });
         const data = await res.json();
         if (data.success) {
-            // Store logged-in reg number for results
             window.loggedReg = reg;
-
             document.querySelector("#loginPage").parentElement.classList.add("hidden");
             document.getElementById("dashboardPage").classList.remove("hidden");
             loadAds(); // Load ads after login
@@ -148,13 +146,12 @@ async function loadAds() {
     try {
         const res = await fetch('/api/ads');
         const data = await res.json();
-        
         console.log("Ads data received:", data);
 
         if (data.success) {
             adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
-            carousel.innerHTML = ''; // Clear previous ads
+            carousel.innerHTML = '';
 
             adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
@@ -162,10 +159,10 @@ async function loadAds() {
                 img.alt = ad.title;
                 img.style.opacity = i === 0 ? 1 : 0;
 
-                // 🔹 Fix: attach click directly to this image
+                // 🔹 Pass correct Firebase node name (ad1, ad2…)
                 img.addEventListener('click', () => {
                     console.log(`Clicked on ad: ${ad.title}`);
-                    fetchAdHtml(ad.id); // Fetch HTML from Firebase based on ad ID
+                    fetchAdHtml(ad.id); 
                 });
 
                 carousel.appendChild(img);
@@ -180,58 +177,21 @@ async function loadAds() {
     }
 }
 
-// Function to fetch ad HTML from Firebase Realtime Database
+// ✅ Function to fetch ad HTML from Firebase Realtime Database
 async function fetchAdHtml(adId) {
     try {
-        // Replace with your actual Firebase project ID
-        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/ad${adId}/html.json`;
-        
+        const firebaseUrl = `https://student-portal-8e8d3-default-rtdb.firebaseio.com/ads/${adId}/html.json`;
         const response = await fetch(firebaseUrl);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        // Get the response as text first to see the raw data
-        const rawData = await response.text();
-        console.log("Raw Firebase response:", rawData);
-        
-        // Parse the JSON response
-        let htmlContent;
-        try {
-            htmlContent = JSON.parse(rawData);
-        } catch (parseError) {
-            console.error("JSON parse error:", parseError);
-            // If parsing fails, use the raw data directly
-            htmlContent = rawData;
-        }
-        
-        console.log("Processed HTML content:", htmlContent);
-        
-        // Handle the content - remove surrounding quotes and unescape
-        if (htmlContent !== null && htmlContent !== undefined && htmlContent !== "null") {
-            let processedHtml = htmlContent;
-            
-            // Remove surrounding quotes if present
-            if (typeof processedHtml === 'string') {
-                if (processedHtml.startsWith('"') && processedHtml.endsWith('"')) {
-                    processedHtml = processedHtml.slice(1, -1);
-                }
-                // Unescape characters
-                processedHtml = processedHtml.replace(/\\"/g, '"')
-                                            .replace(/\\n/g, '\n')
-                                            .replace(/\\t/g, '\t')
-                                            .replace(/\\'/g, "'");
-            }
-            
-            if (processedHtml.trim() !== "") {
-                showAd(processedHtml, `Ad ${adId}`);
-            } else {
-                console.error("Empty HTML content for ad:", adId);
-                alert("Ad content is empty");
-            }
+
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+        const htmlContent = await response.json(); // already a string
+        console.log(`Fetched HTML for ${adId}:`, htmlContent);
+
+        if (htmlContent && htmlContent.trim() !== "") {
+            showAd(htmlContent, adId);
         } else {
-            console.error("No HTML content found for ad:", adId);
+            console.error("Empty HTML content for:", adId);
             alert("Ad content not available");
         }
     } catch (error) {
@@ -240,7 +200,7 @@ async function fetchAdHtml(adId) {
     }
 }
 
-// Function to cycle ads in the carousel
+// Cycle ads
 function nextAd() {
     if (adsImages.length < 2) return;
     const imgs = document.querySelectorAll("#adsCarousel img");
@@ -249,10 +209,9 @@ function nextAd() {
     imgs[currentAd].style.opacity = 1;
 }
 
-// Function to display the content for the clicked ad
+// Show ad in overlay
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
-    fullContent.innerHTML = '';
     fullContent.innerHTML = html;
 
     const fullPage = document.getElementById("fullPage");
@@ -264,7 +223,7 @@ function showAd(html, title) {
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
 
-// Close overlay when clicking outside content
+// Overlay close when clicking outside
 window.onclick = function(event) {
     const fullPage = document.getElementById("fullPage");
     if (event.target === fullPage) {
@@ -275,13 +234,11 @@ window.onclick = function(event) {
 // Close overlay
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
-    if (fullPage) {
-        fullPage.style.display = "none";
-    }
+    if (fullPage) fullPage.style.display = "none";
     history.back();
 }
 
-// Handle browser back button
+// Handle back again
 window.onpopstate = function(event) {
     const overlay = document.getElementById("fullPage");
     if (overlay && overlay.style.display === "block") {
