@@ -84,6 +84,7 @@ window.login = async function() {
         if (data.success) {
             // Store logged-in reg number for results
             window.loggedReg = reg;
+
             document.querySelector("#loginPage").parentElement.classList.add("hidden");
             document.getElementById("dashboardPage").classList.remove("hidden");
             loadAds(); // Load ads after login
@@ -112,6 +113,7 @@ window.openResults = async function() {
         alert("Registration number missing");
         return;
     }
+
     try {
         const res = await fetch(`/api/results?reg=${encodeURIComponent(reg)}`);
         const data = await res.json();
@@ -128,6 +130,7 @@ window.openResults = async function() {
     }
 };
 
+// Handle browser back button
 window.onpopstate = function(event) {
     const overlay = document.getElementById("fullPage");
     if (overlay.style.display === "block") {
@@ -136,47 +139,36 @@ window.onpopstate = function(event) {
 };
 
 // -------------------------
-// Ads carousel
+// Ads carousel - Fixed version
 // -------------------------
-let adsImages = [], currentAd = 0;
+let adsImages = [],
+    currentAd = 0;
 
 async function loadAds() {
     try {
         const res = await fetch('/api/ads');
         const data = await res.json();
+        
         console.log("Ads data received:", data);
 
         if (data.success) {
             adsImages = data.ads;
             const carousel = document.getElementById("adsCarousel");
-            carousel.innerHTML = '';
+            carousel.innerHTML = ''; // Clear previous ads
 
             adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
                 img.src = ad.image;
                 img.alt = ad.title;
                 img.style.opacity = i === 0 ? 1 : 0;
-                img.dataset.adIndex = i;
-                carousel.appendChild(img);
-            });
 
-            // 🔹 On click, fetch HTML directly from Firebase
-            carousel.addEventListener('click', async (e) => {
-                if (e.target.tagName === 'IMG') {
-                    const adIndex = parseInt(e.target.dataset.adIndex) + 1; // starts at 1
-                    try {
-                        const snap = await firebase.database().ref(`Ads/ad${adIndex}/html`).get();
-                        if (snap.exists()) {
-                            const html = snap.val();
-                            console.log(`Fetched HTML for ad${adIndex}:`, html);
-                            showAd(html, adsImages[adIndex - 1].title);
-                        } else {
-                            console.error(`No HTML found at Ads/ad${adIndex}/html`);
-                        }
-                    } catch (err) {
-                        console.error("Error fetching ad HTML:", err);
-                    }
-                }
+                // 🔹 Fix: attach click directly to this image
+                img.addEventListener('click', () => {
+                    console.log(`Clicked on ad: ${ad.title}`);
+                    showAd(ad.html, ad.title);
+                });
+
+                carousel.appendChild(img);
             });
 
             if (adsImages.length > 1) {
@@ -188,6 +180,7 @@ async function loadAds() {
     }
 }
 
+// Function to cycle ads in the carousel
 function nextAd() {
     if (adsImages.length < 2) return;
     const imgs = document.querySelectorAll("#adsCarousel img");
@@ -196,6 +189,7 @@ function nextAd() {
     imgs[currentAd].style.opacity = 1;
 }
 
+// Function to display the content for the clicked ad
 function showAd(html, title) {
     const fullContent = document.getElementById("fullContent");
     fullContent.innerHTML = '';
@@ -210,6 +204,7 @@ function showAd(html, title) {
     history.pushState({ page: 'ads', title: title }, '', '#ads');
 }
 
+// Close overlay when clicking outside content
 window.onclick = function(event) {
     const fullPage = document.getElementById("fullPage");
     if (event.target === fullPage) {
@@ -217,6 +212,7 @@ window.onclick = function(event) {
     }
 };
 
+// Close overlay
 function closeFullPage() {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) {
@@ -225,6 +221,7 @@ function closeFullPage() {
     history.back();
 }
 
+// Handle browser back button
 window.onpopstate = function(event) {
     const overlay = document.getElementById("fullPage");
     if (overlay && overlay.style.display === "block") {
