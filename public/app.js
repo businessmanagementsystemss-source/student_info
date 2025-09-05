@@ -159,13 +159,14 @@ async function loadAds() {
             adsImages.forEach((ad, i) => {
                 const img = document.createElement('img');
                 img.src = ad.image;
-                img.alt = ad.title;
+                img.alt = ad.title || `Ad ${ad.id}`;
                 img.style.opacity = i === 0 ? 1 : 0;
 
-                // 🔹 Each image clickable → fetch HTML from Firebase
+                // 🔹 Fix: normalize ad ID (works for "1" → "ad1")
                 img.addEventListener('click', () => {
-                    console.log(`Clicked on ad: ${ad.id}`);
-                    fetchAdHtml(ad.id); // Pass ad.id (e.g., "ad1", "ad2")
+                    const firebaseAdId = ad.id.startsWith("ad") ? ad.id : `ad${ad.id}`;
+                    console.log(`Clicked on ad: ${firebaseAdId}`);
+                    fetchAdHtml(firebaseAdId);
                 });
 
                 carousel.appendChild(img);
@@ -192,15 +193,12 @@ async function fetchAdHtml(adId) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // ✅ Firebase wraps HTML string in JSON → parse directly
-        const htmlContent = await response.json();
-
-        console.log(`Fetched HTML for ${adId}:`, htmlContent);
+        const htmlContent = await response.json(); // returns a string
+        console.log("🔥 Firebase htmlContent:", htmlContent);
 
         if (htmlContent && typeof htmlContent === "string" && htmlContent.trim() !== "") {
             showAd(htmlContent, `Ad ${adId}`);
         } else {
-            console.error("No valid HTML content for ad:", adId);
             alert("Ad content not available");
         }
     } catch (error) {
