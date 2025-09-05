@@ -220,7 +220,7 @@ function nextAd() {
 }
 
 // Display ad overlay
-function showAd(html, title) {
+function showAd(html) {
     const fullContent = document.getElementById("fullContent");
     fullContent.innerHTML = "";
 
@@ -231,6 +231,4 @@ function showAd(html, title) {
     const fullPage = document.getElementById("fullPage");
     if (fullPage) fullPage.style.display = "block";
 
-    document.title = title || "Ad - Student Portal";
-    history.pushState({ page: "ads", title: title }, "", "#ads");
 }
