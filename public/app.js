@@ -108,31 +108,24 @@ window.closeFullPage = function() {
     }
 };
 
-window.openResults = async function() {
+window.openResults = async function(){
     const reg = window.loggedReg;
-    if (!reg) {
-        alert("Registration number missing");
-        return;
-    }
+    if(!reg) { alert("Registration number missing"); return; }
 
     try {
         const res = await fetch(`/api/results?reg=${encodeURIComponent(reg)}`);
         const data = await res.json();
-        if (data.success) {
+        if(data.success){
             document.getElementById("fullContent").innerHTML = data.html;
-            document.getElementById("fullPage").style.display = "block";
-
-            // Push a history state for browser back button
-            history.pushState({ page: 'results' }, '', '#results');
+            document.getElementById("fullPage").style.display="block";
         } else {
             alert(data.error);
         }
-    } catch (e) {
+    } catch(e){
         console.error(e);
         alert("Error fetching results");
     }
-};
-
+}
 // Handle browser back button
 window.onpopstate = function(event) {
     const overlay = document.getElementById("fullPage");
