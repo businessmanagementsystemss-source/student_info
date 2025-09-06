@@ -1,4 +1,4 @@
-i want when user click on ads the site load html of that ad from firebase than display  from this app.js // -------------------------
+// -------------------------
 // app.js
 // -------------------------
 
@@ -248,4 +248,4 @@ window.onpopstate = function(event) {
     if (overlay && overlay.style.display === "block") {
         overlay.style.display = "none";
     }
-}; i have problem with ads that shown when click always show html of single ads even i click another ads
+};
