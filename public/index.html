@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+give full from this html <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -6,60 +6,15 @@
   <title>Student Portal</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
-
-  <style>
-    /* --- FIXES ADDED --- */
-
-    /* Slideshow images */
-    #slideImage {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    /* Detail (ad) view */
-    .detail-view {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      flex-direction: column;
-      z-index: 1000;
-    }
-
-    .detail-view-content {
-      flex: 1;
-      background: #fff;
-      border-radius: 10px;
-      margin: 60px 20px 20px;
-      padding: 15px;
-      overflow-y: auto; /* ✅ makes content scrollable */
-    }
-
-    /* Floating close button */
-    .close-btn {
-      position: fixed;
-      top: 10px;
-      right: 15px;
-      z-index: 1100; /* ✅ ensures clickable */
-      background: #f44336;
-      color: #fff;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 18px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-
-    .hidden { display: none; }
-  </style>
 </head>
+  <style>/* Slideshow images */
+.slideshow-container img {
+  width: 100%;
+  height: 250px; /* adjust height */
+  object-fit: cover; /* ensures images fill the box */
+  border-radius: 10px;
+}
+</style>
 <body>
   <!-- Login/Register Card -->
   <div class="auth-card">
@@ -74,6 +29,48 @@
       </div>
       <button onclick="login()"><i class="fas fa-lock-open"></i> Login</button>
       <div class="link" onclick="showPage('registerPage')"><i class="fas fa-user-plus"></i> Not registered? Click here</div>
+    </div>
+
+    <!-- Registration Form -->
+    <div id="registerPage" class="hidden">
+      <h2><i class="fas fa-user-edit"></i> Register</h2>
+
+      <label>Full Name</label>
+      <input type="text" id="fullName" placeholder="Enter your full name">
+
+      <label>Registration Number</label>
+      <input type="text" id="regNumber" placeholder="Enter your registration number">
+
+      <label>Email</label>
+      <input type="email" id="email" placeholder="Enter your email">
+
+      <label>Phone Number</label>
+      <input type="tel" id="phone" placeholder="Enter your phone number">
+
+      <label>Gender</label>
+      <select id="gender">
+        <option value="">Choose...</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+
+      <label>Date of Birth</label>
+      <input type="date" id="dob">
+
+      <label>Create Password</label>
+      <div class="input-group">
+        <input type="password" id="password" placeholder="Create a password">
+        <span class="toggle-icon" onclick="togglePassword('password', this)"><i class="fas fa-eye"></i></span>
+      </div>
+
+      <label>Repeat Password</label>
+      <div class="input-group">
+        <input type="password" id="repeatPassword" placeholder="Repeat your password">
+        <span class="toggle-icon" onclick="togglePassword('repeatPassword', this)"><i class="fas fa-eye"></i></span>
+      </div>
+
+      <button onclick="register()"><i class="fas fa-check-circle"></i> Submit</button>
+      <div class="link" onclick="showPage('loginPage')"><i class="fas fa-sign-in-alt"></i> Already have an account? Click here</div>
     </div>
   </div>
 
@@ -95,6 +92,41 @@
         </div>
         <div class="indicators" id="indicators"></div>
       </div>
+
+      <!-- Results -->
+      <div class="card">
+        <div class="card-content">
+          <h3><i class="fas fa-chart-line"></i> Results</h3>
+          <p>View your examination results and academic performance.</p>
+          <button onclick="openResults()"><i class="fas fa-external-link-alt"></i> Open Results</button>
+        </div>
+      </div>
+
+      <!-- Learning Portal -->
+      <div class="card">
+        <div class="card-content">
+          <h3><i class="fas fa-book-open"></i> Learning Portal</h3>
+          <p>Access course materials, notes, and learning resources.</p>
+          <button onclick="alert('Under development')"><i class="fas fa-external-link-alt"></i> Open Portal</button>
+        </div>
+      </div>
+      
+      <!-- Additional Cards -->
+      <div class="card">
+        <div class="card-content">
+          <h3><i class="fas fa-calendar-alt"></i> Schedule</h3>
+          <p>View your class timetable and academic calendar.</p>
+          <button onclick="alert('Schedule feature coming soon')"><i class="fas fa-external-link-alt"></i> View Schedule</button>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-content">
+          <h3><i class="fas fa-user-circle"></i> Profile</h3>
+          <p>Manage your personal information and preferences.</p>
+          <button onclick="alert('Profile section coming soon')"><i class="fas fa-external-link-alt"></i> Edit Profile</button>
+        </div>
+      </div>
     </div>
 
     <!-- Detail View -->
@@ -106,15 +138,17 @@
     </div>
   </div>
 
-  <script>
-    /* -----------------------------
-       YOUR ORIGINAL FUNCTIONS SAFE
-       ----------------------------- */
+  <!-- Fullpage Overlay -->
+  <div id="fullPage" class="fullpage">
+    <div id="fullContent"></div>
+  </div>
 
-    // Example ads (keep your full ad HTMLs here)
+  <script>
+
+    // Ad slides data
     const slides = [
       {
-        img: https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgEo8LsRK2iMYK4n_WRHPIlj6c5KNAqijHTiuOCYkK93vIXYrbSSWrZqhv1rhs44SmWItuJ7C918OwxaJF_iF6jENs02YFZuvrmsZMvm-GyZddBdMBxbO_Ds_G-CdxaA6PEmsgxEhFe5IDqJukjhUAVgGyiih4ApF5ToUhnPiW9FtAB6VfdfYDxwncHBik/s320/Creative%20Modern%20Business%20Card.png",
+        img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgEo8LsRK2iMYK4n_WRHPIlj6c5KNAqijHTiuOCYkK93vIXYrbSSWrZqhv1rhs44SmWItuJ7C918OwxaJF_iF6jENs02YFZuvrmsZMvm-GyZddBdMBxbO_Ds_G-CdxaA6PEmsgxEhFe5IDqJukjhUAVgGyiih4ApF5ToUhnPiW9FtAB6VfdfYDxwncHBik/s320/Creative%20Modern%20Business%20Card.png",
         title: "HP EliteBook 830 G5",
         description: "Special student offer: Powerful laptop for your studies",
         html: `<!DOCTYPE html> <html lang="en"> <head>   <meta charset="UTF-8" />   <meta name="viewport" content="width=device-width, initial-scale=1" />   <title>HP EliteBook 830 G5 — Student Offer</title>   <meta name="description" content="HP EliteBook 830 G5 student-friendly offer: Intel Core i5, 8GB RAM, 256GB SSD, 13.3” FHD, Fingerprint, Backlit keyboard. Best price: 630,000/-. Free wireless mouse." />   <link rel="preconnect" href="https://fonts.googleapis.com">   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">   <style>     body {       margin: 0;       font-family: 'Poppins', sans-serif;       background: #ffffff;       color: #111;       line-height: 1.55;     }     .wrap {       max-width: 1000px;       margin: 40px auto;       padding: 20px;     }     .header {       display: grid;       grid-template-columns: 1.2fr 1fr;       gap: 24px;       align-items: center;       padding: 28px 0;     }     @media (max-width: 860px) {       .header {         grid-template-columns: 1fr;       }     }     .badge {       display: inline-block;       background: #3b82f6;       color: white;       padding: 6px 12px;       border-radius: 999px;       font-weight: 600;       font-size: 12px;       margin-bottom: 10px;     }     h1 { margin: 0 0 8px; font-size: clamp(22px, 4vw, 36px); }     .slogan {       font-weight: 600;       color: #22c55e;       font-size: clamp(16px, 2.2vw, 20px);       margin-bottom: 8px;     }     .blurb { color: #555; margin-bottom: 14px; }     .price-box {       display: flex;       align-items: center;       gap: 10px;       flex-wrap: wrap;       margin-bottom: 20px;     }     .price {       font-weight: 800;       font-size: clamp(20px, 3vw, 28px);       color: white;       padding: 8px 14px;       background: linear-gradient(90deg,#3b82f6,#22c55e);       border-radius: 12px;     }     .offer {       display: inline-flex;       align-items: center;       gap: 8px;       font-weight: 600;       color: #f59e0b;     }     .image img {       max-width: 100%;       border-radius: 18px;     }     .gallery {       display: flex;       flex-wrap: wrap;       gap: 10px;       margin: 20px 0;     }     .gallery img {       width: 160px;       border-radius: 10px;       border: 1px solid #eee;     }     .specs {       display: grid;       grid-template-columns: repeat(2, minmax(0,1fr));       gap: 14px;       margin-bottom: 20px;     }     @media (max-width:720px){ .specs{ grid-template-columns:1fr } }     .spec {       padding: 12px 14px;       border-radius: 8px;       background: #f9f9f9;       border: 1px solid #eee;     }     .spec b {       display: block;       font-size: 12px;       color: #3b82f6;       text-transform: uppercase;       margin-bottom: 4px;     }     .cta {       display: flex;       flex-wrap: wrap;       gap: 12px;       align-items: center;       justify-content: space-between;       margin-top: 20px;       padding-top: 10px;       border-top: 1px dashed #eee;     }     .contact-link {       display: inline-flex;       align-items: center;       gap: 8px;       padding: 12px 16px;       border-radius: 12px;       background: linear-gradient(90deg,#25d366,#128c7e);       color: white;       text-decoration: none;       font-weight: 700;     }     .note { color: #555; font-size: 13px; }     .kicker { font-size: 12px; color: #22c55e; font-weight: 600; }   </style> </head> <body>   <div class="wrap">     <div class="header">       <div>         <span class="badge">Student Deal</span>         <h1>HP EliteBook 830 G5</h1>         <div class="slogan">Your Everyday Study Partner</div>         <p class="blurb">Lightweight, durable, and fast—made for lectures, notes, research, and projects. Reliable security and battery life to keep you productive on campus and beyond.</p>         <div class="price-box">           <div class="price">BEST PRICE: 650,000/-</div>           <div class="offer">Free Wireless Mouse 🎁</div>         </div>       </div>       <div class="image">         <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiKdXNxNhMsAGpt3ypSWcc0BlxMzv-HODBEU70AcCNvTIu8lWv4oEUmhdseG7ye1ZLzsb9IzKHi3nE5wYdxtTa4oXMJdGt3IJOZ5pZorXLl8JcgCjFtEg8C-wtcOuXJISP0CM1aUYeRsgNWA-HLI-fBt4XSFvvvJ9ZufZvCqQeBw0TRxZ7EeETzQAfNsd8/s320/IMG-20250824-WA0018.jpg" alt="HP EliteBook">       </div>     </div>      <div class="gallery">       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpfHL_JiDZF9tElRkXwjRmL6-eZRjZp5cgujVUgQkpq-2Jv3dHgzsNs3PN4jq-Zk6jMXlagrd_CBQ3f6pPDiwY_b2yFg9crfWpUWOK5HwWNucIFC9LH7a3ZAKHE0gAp-lnBo5vD-1FwJxLd_1ydKX60-8f1xmI0ZLIf_lxlKyrCht8eLch9yKzJ_C4WMs/s320/IMG-20250824-WA0016.jpg" alt="view 1">       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjcr73DPCZxGL-wyb7ZtA4Yys1tcL12rYyE0oQ54-uEWBPBhyphenhyphenpxNomcq2_xTE-St52nP1OcdyHs2sRo3PrbSTh-6N-nEQDkjH3Q8sLy1AUKvUl-aP3OjqOoSEp4SYWqBw5eeGqWiyZHqRvebYEfk3Qf5twK4ArQ6Ra99posRnnN4YwgvQbkV1bSNEc-Qww/s320/IMG-20250824-WA0017.jpg" alt="view 2">       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiKdXNxNhMsAGpt3ypSWcc0BlxMzv-HODBEU70AcCNvTIu8lWv4oEUmhdseG7ye1ZLzsb9IzKHi3nE5wYdxtTa4oXMJdGt3IJOZ5pZorXLl8JcgCjFtEg8C-wtcOuXJISP0CM1aUYeRsgNWA-HLI-fBt4XSFvvvJ9ZufZvCqQeBw0TRxZ7EeETzQAfNsd8/s320/IMG-20250824-WA0018.jpg" alt="view 3">     </div>      <div class="specs">       <div class="spec"><b>CPU</b> Intel Core i5 (8th Gen)</div>       <div class="spec"><b>RAM</b> 8GB DDR4 (up to 32GB)</div>       <div class="spec"><b>Storage</b> 256GB SSD M.2 NVMe (up to 1TB+)</div>       <div class="spec"><b>Display</b> 13.3” FHD (1920×1080), non‑touch</div>       <div class="spec"><b>Graphics</b> Intel UHD 620</div>       <div class="spec"><b>Keyboard</b> Backlit, spill‑resistant</div>       <div class="spec"><b>Connectivity</b> Wi‑Fi + Bluetooth</div>       <div class="spec"><b>Camera</b> 720p HD with privacy shutter</div>       <div class="spec"><b>Security</b> Fingerprint + TPM 2.0</div>     </div>      <div class="cta">       <div class="kicker">Limited student stock • First come, first served</div>       <a class="contact-link" href="https://wa.me/255673550040" target="_blank">Contact Seller on WhatsApp</a>       <div class="note">Need bulk for a class or lab? Ask for the student discount.</div>     </div>   </div> </body> </html>`
@@ -138,7 +172,7 @@
     let currentIndex = 0;
     let slideInterval;
 
-    // Initialize slideshow
+    // Initialize
     updateSlide();
     createIndicators();
     startSlideShow();
@@ -186,20 +220,23 @@
       startSlideShow();
     }
 
-    // Show ad detail
+    // Show ad detail + push state
     slideImage.addEventListener("click", () => {
       mainContainer.style.display = "none";
       detailView.classList.remove("hidden");
       detailContent.innerHTML = slides[currentIndex].html;
+
+      history.pushState({ page: "ad" }, "", "#ad");
     });
 
-    function closeDetailView() {
-      detailView.classList.add("hidden");
-      mainContainer.style.display = "grid";
-    }
-
-    /* Your login, register, and other functions remain untouched */
+    // Handle browser back button
+    window.addEventListener("popstate", (event) => {
+      if (!event.state || event.state.page !== "ad") {
+        detailView.classList.add("hidden");
+        mainContainer.style.display = "grid";
+      }
+    });
   </script>
-   <script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
