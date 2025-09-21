@@ -52,6 +52,29 @@
       .indicator.active {
         background-color: #717171;
       }
+
+      /* FIX: Add this CSS to manage scrolling */
+      .no-scroll {
+        overflow: hidden;
+      }
+
+      .detail-view {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white; /* Or a semi-transparent background */
+        z-index: 1000;
+        overflow-y: auto; /* Enable scrolling on the ad container itself */
+        -webkit-overflow-scrolling: touch; /* For smoother iOS scrolling */
+      }
+
+      .detail-view-content {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
     </style>
   </head>
   <body>
@@ -136,8 +159,7 @@
       </h1>
       <div class="container" id="mainContainer">
         <div class="card" style="grid-column: 1 / -1">
-          <div class="slideshow-container" id="slideshow-container">
-            </div>
+          <div class="slideshow-container" id="slideshow-container"></div>
           <div class="card-content">
             <h3 class="card-title" id="slideTitle"></h3>
             <p class="card-description" id="slideDescription"></p>
@@ -289,14 +311,18 @@
         startSlideShow();
       }
 
+      // FIX: Add no-scroll class to body
       function showAdDetail(index) {
+        document.body.classList.add('no-scroll');
         mainContainer.style.display = "none";
         detailView.classList.remove("hidden");
         detailContent.innerHTML = slides[index].html;
         history.pushState({ page: "ad" }, "", "#ad");
       }
 
+      // FIX: Remove no-scroll class from body
       function closeDetailView() {
+        document.body.classList.remove('no-scroll');
         detailView.classList.add("hidden");
         mainContainer.style.display = "grid";
         history.pushState({ page: "dashboard" }, "", "#dashboard");
@@ -313,6 +339,8 @@
       // Handle browser back button
       window.addEventListener("popstate", (event) => {
         if (!event.state || event.state.page !== "ad") {
+          // FIX: Remove no-scroll class when navigating back
+          document.body.classList.remove('no-scroll');
           detailView.classList.add("hidden");
           mainContainer.style.display = "grid";
         }
