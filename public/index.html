@@ -20,87 +20,27 @@
 
     <link rel="stylesheet" href="style.css" />
 
-    <style>
-
-      /* Corrected CSS for the slider */
-
-      .slideshow-container {
-
-        position: relative;
-
-        max-width: 100%;
-
-        margin: auto;
-
-      }
-
-
-      .slideshow-container img {
-
-        width: 100%;
-
-        height: 250px; /* Adjust height */
-
-        object-fit: cover; /* Ensures images fill the box */
-
-        border-radius: 10px;
-
-        transition: opacity 0.5s ease-in-out;
-
-      }
-
-
-      .slide {
-
-        display: none;
-
-      }
-
-
-      .slide.active {
-
-        display: block;
-
-      }
-
-
-      .indicators {
-
-        text-align: center;
-
-        margin-top: 10px;
-
-      }
-
-
-      .indicator {
-
-        height: 10px;
-
-        width: 10px;
-
-        background-color: #bbb;
-
-        border-radius: 50%;
-
-        display: inline-block;
-
-        margin: 0 5px;
-
-        cursor: pointer;
-
-        transition: background-color 0.6s ease;
-
-      }
-
-
-      .indicator.active {
-
-        background-color: #717171;
-
-      }
-
-    </style>
+<style>
+    /* Only ads changes */
+    #cardContainer {
+      width: 100%;
+      height: 300px; /* adjust height */
+      overflow: hidden;
+      border-radius: 10px;
+      position: relative;
+    }
+    #slideImage {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+      display: block;
+    }
+    .detail-view {
+      width: 100%;
+      min-height: 100vh;
+    }
+  </style>
 
   </head>
 
@@ -382,110 +322,98 @@
 
     </div>
 
-
  <script>
-  const slides = [
-    {
-      img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgEo8LsRK2iMYK4n_WRHPIlj6c5KNAqijHTiuOCYkK93vIXYrbSSWrZqhv1rhs44SmWItuJ7C918OwxaJF_iF6jENs02YFZuvrmsZMvm-GyZddBdMBxbO_Ds_G-CdxaA6PEmsgxEhFe5IDqJukjhUAVgGyiih4ApF5ToUhnPiW9FtAB6VfdfYDxwncHBik/s320/Creative%20Modern%20Business%20Card.png",
-      title: "HP EliteBook 830 G5",
-      description: "Special student offer: Powerful laptop for your studies",
-      html: "<p>Ad detail content...</p>",
-    },
-    {
-      img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEigg9r3ZLFjcjqJqB7vuhlkgoMqcRjzhlrNFS5IhL2pvSlqpCM3OHtAwYyyyxcrlyjty54OylYUpYmEJorwAWrqQYfZ-8UPEtSOje9_p4J14ZW4mkG9S9m4JBf21S6TxMfEUuYD4h-3xB4X5gRqiKMf1eeyCz7gayD8wbqr1zw-Wkb400iZlqGhM8E6Px4/s320/DELL%20LATITUDE%205410%2010TH%20GEN.png",
-      title: "DELL Latitude 5410",
-      description: "Special student offer: Durable and powerful laptop",
-      html: "<p>Ad detail content...</p>",
+    const slides = [
+      {
+        img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgEo8LsRK2iMYK4n_WRHPIlj6c5KNAqijHTiuOCYkK93vIXYrbSSWrZqhv1rhs44SmWItuJ7C918OwxaJF_iF6jENs02YFZuvrmsZMvm-GyZddBdMBxbO_Ds_G-CdxaA6PEmsgxEhFe5IDqJukjhUAVgGyiih4ApF5ToUhnPiW9FtAB6VfdfYDxwncHBik/s320/Creative%20Modern%20Business%20Card.png",
+        
+        html: `<!DOCTYPE html> <html lang="en"> <head>   <meta charset="UTF-8" />   <meta name="viewport" content="width=device-width, initial-scale=1" />   <title>HP EliteBook 830 G5 — Student Offer</title>   <meta name="description" content="HP EliteBook 830 G5 student-friendly offer: Intel Core i5, 8GB RAM, 256GB SSD, 13.3” FHD, Fingerprint, Backlit keyboard. Best price: 630,000/-. Free wireless mouse." />   <link rel="preconnect" href="https://fonts.googleapis.com">   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">   <style>     body {       margin: 0;       font-family: 'Poppins', sans-serif;       background: #ffffff;       color: #111;       line-height: 1.55;     }     .wrap {       max-width: 1000px;       margin: 40px auto;       padding: 20px;     }     .header {       display: grid;       grid-template-columns: 1.2fr 1fr;       gap: 24px;       align-items: center;       padding: 28px 0;     }     @media (max-width: 860px) {       .header {         grid-template-columns: 1fr;       }     }     .badge {       display: inline-block;       background: #3b82f6;       color: white;       padding: 6px 12px;       border-radius: 999px;       font-weight: 600;       font-size: 12px;       margin-bottom: 10px;     }     h1 { margin: 0 0 8px; font-size: clamp(22px, 4vw, 36px); }     .slogan {       font-weight: 600;       color: #22c55e;       font-size: clamp(16px, 2.2vw, 20px);       margin-bottom: 8px;     }     .blurb { color: #555; margin-bottom: 14px; }     .price-box {       display: flex;       align-items: center;       gap: 10px;       flex-wrap: wrap;       margin-bottom: 20px;     }     .price {       font-weight: 800;       font-size: clamp(20px, 3vw, 28px);       color: white;       padding: 8px 14px;       background: linear-gradient(90deg,#3b82f6,#22c55e);       border-radius: 12px;     }     .offer {       display: inline-flex;       align-items: center;       gap: 8px;       font-weight: 600;       color: #f59e0b;     }     .image img {       max-width: 100%;       border-radius: 18px;     }     .gallery {       display: flex;       flex-wrap: wrap;       gap: 10px;       margin: 20px 0;     }     .gallery img {       width: 160px;       border-radius: 10px;       border: 1px solid #eee;     }     .specs {       display: grid;       grid-template-columns: repeat(2, minmax(0,1fr));       gap: 14px;       margin-bottom: 20px;     }     @media (max-width:720px){ .specs{ grid-template-columns:1fr } }     .spec {       padding: 12px 14px;       border-radius: 8px;       background: #f9f9f9;       border: 1px solid #eee;     }     .spec b {       display: block;       font-size: 12px;       color: #3b82f6;       text-transform: uppercase;       margin-bottom: 4px;     }     .cta {       display: flex;       flex-wrap: wrap;       gap: 12px;       align-items: center;       justify-content: space-between;       margin-top: 20px;       padding-top: 10px;       border-top: 1px dashed #eee;     }     .contact-link {       display: inline-flex;       align-items: center;       gap: 8px;       padding: 12px 16px;       border-radius: 12px;       background: linear-gradient(90deg,#25d366,#128c7e);       color: white;       text-decoration: none;       font-weight: 700;     }     .note { color: #555; font-size: 13px; }     .kicker { font-size: 12px; color: #22c55e; font-weight: 600; }   </style> </head> <body>   <div class="wrap">     <div class="header">       <div>         <span class="badge">Student Deal</span>         <h1>HP EliteBook 830 G5</h1>         <div class="slogan">Your Everyday Study Partner</div>         <p class="blurb">Lightweight, durable, and fast—made for lectures, notes, research, and projects. Reliable security and battery life to keep you productive on campus and beyond.</p>         <div class="price-box">           <div class="price">BEST PRICE: 650,000/-</div>           <div class="offer">Free Wireless Mouse 🎁</div>         </div>       </div>       <div class="image">         <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiKdXNxNhMsAGpt3ypSWcc0BlxMzv-HODBEU70AcCNvTIu8lWv4oEUmhdseG7ye1ZLzsb9IzKHi3nE5wYdxtTa4oXMJdGt3IJOZ5pZorXLl8JcgCjFtEg8C-wtcOuXJISP0CM1aUYeRsgNWA-HLI-fBt4XSFvvvJ9ZufZvCqQeBw0TRxZ7EeETzQAfNsd8/s320/IMG-20250824-WA0018.jpg" alt="HP EliteBook">       </div>     </div>      <div class="gallery">       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpfHL_JiDZF9tElRkXwjRmL6-eZRjZp5cgujVUgQkpq-2Jv3dHgzsNs3PN4jq-Zk6jMXlagrd_CBQ3f6pPDiwY_b2yFg9crfWpUWOK5HwWNucIFC9LH7a3ZAKHE0gAp-lnBo5vD-1FwJxLd_1ydKX60-8f1xmI0ZLIf_lxlKyrCht8eLch9yKzJ_C4WMs/s320/IMG-20250824-WA0016.jpg" alt="view 1">       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjcr73DPCZxGL-wyb7ZtA4Yys1tcL12rYyE0oQ54-uEWBPBhyphenhyphenpxNomcq2_xTE-St52nP1OcdyHs2sRo3PrbSTh-6N-nEQDkjH3Q8sLy1AUKvUl-aP3OjqOoSEp4SYWqBw5eeGqWiyZHqRvebYEfk3Qf5twK4ArQ6Ra99posRnnN4YwgvQbkV1bSNEc-Qww/s320/IMG-20250824-WA0017.jpg" alt="view 2">       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiKdXNxNhMsAGpt3ypSWcc0BlxMzv-HODBEU70AcCNvTIu8lWv4oEUmhdseG7ye1ZLzsb9IzKHi3nE5wYdxtTa4oXMJdGt3IJOZ5pZorXLl8JcgCjFtEg8C-wtcOuXJISP0CM1aUYeRsgNWA-HLI-fBt4XSFvvvJ9ZufZvCqQeBw0TRxZ7EeETzQAfNsd8/s320/IMG-20250824-WA0018.jpg" alt="view 3">     </div>      <div class="specs">       <div class="spec"><b>CPU</b> Intel Core i5 (8th Gen)</div>       <div class="spec"><b>RAM</b> 8GB DDR4 (up to 32GB)</div>       <div class="spec"><b>Storage</b> 256GB SSD M.2 NVMe (up to 1TB+)</div>       <div class="spec"><b>Display</b> 13.3” FHD (1920×1080), non‑touch</div>       <div class="spec"><b>Graphics</b> Intel UHD 620</div>       <div class="spec"><b>Keyboard</b> Backlit, spill‑resistant</div>       <div class="spec"><b>Connectivity</b> Wi‑Fi + Bluetooth</div>       <div class="spec"><b>Camera</b> 720p HD with privacy shutter</div>       <div class="spec"><b>Security</b> Fingerprint + TPM 2.0</div>     </div>      <div class="cta">       <div class="kicker">Limited student stock • First come, first served</div>       <a class="contact-link" href="https://wa.me/255673550040" target="_blank">Contact Seller on WhatsApp</a>       <div class="note">Need bulk for a class or lab? Ask for the student discount.</div>     </div>   </div> </body> </html>
+    `
+      },
+      {
+        img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEigg9r3ZLFjcjqJqB7vuhlkgoMqcRjzhlrNFS5IhL2pvSlqpCM3OHtAwYyyyxcrlyjty54OylYUpYmEJorwAWrqQYfZ-8UPEtSOje9_p4J14ZW4mkG9S9m4JBf21S6TxMfEUuYD4h-3xB4X5gRqiKMf1eeyCz7gayD8wbqr1zw-Wkb400iZlqGhM8E6Px4/s320/DELL%20LATITUDE%205410%2010TH%20GEN.png",
+        
+       
+        html: `<!DOCTYPE html> <html lang="en"> <head>   <meta charset="UTF-8" />   <meta name="viewport" content="width=device-width, initial-scale=1" />   <title>DELL Latitude 5410 — Student Deal</title>   <meta name="description" content="Student offer on Dell Latitude 5410 (10th Gen i5) — durable, fast, and affordable. Best price 650,000 TZS with free wireless mouse!" />   <link rel="preconnect" href="https://fonts.googleapis.com">   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">   <style>     body {       margin: 0;       font-family: 'Poppins', sans-serif;       background: #ffffff;       color: #111;       line-height: 1.55;     }     .wrap {       max-width: 1000px;       margin: 40px auto;       padding: 20px;     }     .header {       display: grid;       grid-template-columns: 1.2fr 1fr;       gap: 24px;       align-items: center;       padding: 28px 0;     }     @media (max-width: 860px) {       .header { grid-template-columns: 1fr; }     }     .badge {       display: inline-block;       background: #3b82f6;       color: white;       padding: 6px 12px;       border-radius: 999px;       font-weight: 600;       font-size: 12px;       margin-bottom: 10px;     }     h1 { margin: 0 0 8px; font-size: clamp(22px, 4vw, 36px); }     .slogan {       font-weight: 600;       color: #22c55e;       font-size: clamp(16px, 2.2vw, 20px);       margin-bottom: 8px;     }     .blurb { color: #555; margin-bottom: 14px; }     .price-box {       display: flex;       align-items: center;       gap: 10px;       flex-wrap: wrap;       margin-bottom: 20px;     }     .price {       font-weight: 800;       font-size: clamp(20px, 3vw, 28px);       color: white;       padding: 8px 14px;       background: linear-gradient(90deg,#3b82f6,#22c55e);       border-radius: 12px;     }     .offer {       display: inline-flex;       align-items: center;       gap: 8px;       font-weight: 600;       color: #f59e0b;     }     .image img {       max-width: 100%;       border-radius: 18px;     }     .gallery {       display: flex;       flex-wrap: wrap;       gap: 10px;       margin: 20px 0;     }     .gallery img {       width: 160px;       border-radius: 10px;       border: 1px solid #eee;     }     .specs {       display: grid;       grid-template-columns: repeat(2, minmax(0,1fr));       gap: 14px;       margin-bottom: 20px;     }     @media (max-width:720px){ .specs{ grid-template-columns:1fr } }     .spec {       padding: 12px 14px;       border-radius: 8px;       background: #f9f9f9;       border: 1px solid #eee;     }     .spec b {       display: block;       font-size: 12px;       color: #3b82f6;       text-transform: uppercase;       margin-bottom: 4px;     }     .cta {       display: flex;       flex-wrap: wrap;       gap: 12px;       align-items: center;       justify-content: space-between;       margin-top: 20px;       padding-top: 10px;       border-top: 1px dashed #eee;     }     .contact-link {       display: inline-flex;       align-items: center;       gap: 8px;       padding: 12px 16px;       border-radius: 12px;       background: linear-gradient(90deg,#25d366,#128c7e);       color: white;       text-decoration: none;       font-weight: 700;     }     .note { color: #555; font-size: 13px; }     .kicker { font-size: 12px; color: #22c55e; font-weight: 600; }   </style> </head> <body>   <div class="wrap">     <div class="header">       <div>         <span class="badge">Student Deal</span>         <h1>DELL Latitude 5410</h1>         <div class="slogan">Study Smarter, Achieve More</div>         <p class="blurb">Fast, durable, and reliable—perfect for lectures, notes, coding, and campus life. Business-class durability and battery life keep you productive all day.</p>         <div class="price-box">           <div class="price">BEST PRICE: 650,000/-</div>           <div class="offer">Free Wireless Mouse 🎁</div>         </div>       </div>       <div class="image">         <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEigg9r3ZLFjcjqJqB7vuhlkgoMqcRjzhlrNFS5IhL2pvSlqpCM3OHtAwYyyyxcrlyjty54OylYUpYmEJorwAWrqQYfZ-8UPEtSOje9_p4J14ZW4mkG9S9m4JBf21S6TxMfEUuYD4h-3xB4X5gRqiKMf1eeyCz7gayD8wbqr1zw-Wkb400iZlqGhM8E6Px4/s320/DELL%20LATITUDE%205410%2010TH%20GEN.png" alt="DELL Latitude 5410">       </div>     </div>      <div class="gallery">       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhSqpjwCr1JzX80WkfZXgynF_slzBNH1gCMharVaqWFkXfZQ2c-10FB_hzf_99I9LVyyQ8f-mgcUVPopzwYoizlC8CRfdrX2ArsBF_VYweWotf4r0aZ4_uLcTFdsay1ArXE_2LPzVzPcmrhGs1nzaBdmaRuKCtN8Jc0tEYxnFvLkHtdS-gcBRE_OJ0l124/s320/WhatsApp%20Image%202025-08-24%20at%2007.58.48.jpeg" alt="view 1">       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg6OSjJ1Q2Pj8iOb7_upIJm5QcPiGXxXQWgmOxtTG9VAIyb-jFnVPnM7u7ZO1737Sgvbn2MlTfIUb3yFfcrd7H22bH3YM8ZyRBLVaoclOmXO8i0-fb3q19GsHAG7utvPDMP_VpiLDdAuOBwkNVJntMUCTRjhLb77JMx4r2CKfLRH1rL5w1D3BlftB_JT8I/s320/WhatsApp%20Image%202025-08-24%20at%2007.58.47.jpeg" alt="view 2">       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiIRtSxtDyvpDx3YIRx_BlAySk5tiZ6aoL_Y6f7WtcfSCpOPfWwFHNnJb0v0pTJeg9NLyhF2Ur65WB_fY42eDQdmDqJOZAZ_u2OeQf2vEC2QfJZ8GoPziaDFfAqornLSxBQ6aymcRYOMxM981PDWkYEXIfeW_NuqNk1M7vBS8ZSHpIHWHEAJ8-9zMUe0b8/s320/WhatsApp%20Image%202025-08-24%20at%2007.58.48%20(1).jpeg" alt="view 3">       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjK6byfljQ1mkoUlfpQMD5YmjkVZJ__S7k8Df-McAtIiFkLE4EHR12B5w4q6HJBvxtZUlhJhh9aQJJanl80DE5tx5MLrz2WS9-EC01fh_9W7s9XbycO0oOiX1bJs8h9Y5X77BI0nGRbrVICThNi8JzPeyexcXuTo87D39UGuvibMGBH1noRIZc4kGY7B0U/s320/WhatsApp%20Image%202025-08-24%20at%2007.58.47%20(1).jpeg" alt="view 4">     </div>      <div class="specs">       <div class="spec"><b>CPU</b> Intel Core i5 (10th Gen)</div>       <div class="spec"><b>RAM</b> 8GB DDR4 (up to 32GB)</div>       <div class="spec"><b>Storage</b> 256GB SSD (upgradeable to 1TB)</div>       <div class="spec"><b>Display</b> 14” FHD (1920×1080), anti-glare</div>       <div class="spec"><b>Graphics</b> Intel UHD</div>       <div class="spec"><b>Keyboard</b> Backlit, spill-resistant</div>       <div class="spec"><b>Connectivity</b> Wi-Fi 6 • Bluetooth 5.0 • LAN • USB-C • USB-A</div>       <div class="spec"><b>Camera</b> HD Webcam (720p) + Privacy Shutter</div>       <div class="spec"><b>Battery</b> 4-cell Li-ion, >4hrs • ExpressCharge</div>     </div>      <div class="cta">       <div class="kicker">Limited student stock • First come, first served</div>       <a class="contact-link" href="https://wa.me/255673550040" target="_blank">Contact Seller on WhatsApp</a>       <div class="note">Need bulk for a class or lab? Ask for the student discount.</div>     </div>   </div> </body> </html>
+    `
+      },
+       {
+        img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjy3NAFbJ4SmvHXDwpejjW7Slotuf6ddJVGgz-k9L-R9V1GxJDYUT5rMnb_4AA8zKXxR0hyphenhyphen_sZ_vEtAZKf5C-e-yiNZIenlxz_upTNYEtjYItuwMc5FfIDkCqgaL1F2M5PKRyaAEBqxMj6s_6fX76kRSJ-P6TdBFmAo6RMgVGnXrlTZOlj8mMfWUpvqamM/s320/Lenovo%20ThinkPad%20T480.png",
+        
+       
+        html: `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Lenovo ThinkPad T480 — Student Deal</title><meta name="description" content="Student offer on Lenovo ThinkPad T480 (8th Gen i5) — durable, powerful, and reliable. Best price with free wireless mouse!"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"><style>body{margin:0;font-family:'Poppins',sans-serif;background:#ffffff;color:#111;line-height:1.55}.wrap{max-width:1000px;margin:40px auto;padding:20px}.header{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center;padding:28px 0}@media(max-width:860px){.header{grid-template-columns:1fr}}.badge{display:inline-block;background:#3b82f6;color:white;padding:6px 12px;border-radius:999px;font-weight:600;font-size:12px;margin-bottom:10px}h1{margin:0 0 8px;font-size:clamp(22px,4vw,36px)}.slogan{font-weight:700;color:#dc2626;font-size:clamp(16px,2.2vw,22px);margin-bottom:10px;text-shadow:0 1px 2px rgba(0,0,0,0.1)}.blurb{color:#555;margin-bottom:14px}.price-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px}.price{font-weight:800;font-size:clamp(20px,3vw,28px);color:white;padding:8px 14px;background:linear-gradient(90deg,#3b82f6,#22c55e);border-radius:12px}.offer{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:#f59e0b}.image img{max-width:100%;border-radius:18px}.gallery{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}.gallery img{width:160px;border-radius:10px;border:1px solid #eee}.specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:20px}@media(max-width:720px){.specs{grid-template-columns:1fr}}.spec{padding:12px 14px;border-radius:8px;background:#f9f9f9;border:1px solid #eee}.spec b{display:block;font-size:12px;color:#3b82f6;text-transform:uppercase;margin-bottom:4px}.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:20px;padding-top:10px;border-top:1px dashed #eee}.contact-link{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;background:linear-gradient(90deg,#25d366,#128c7e);color:white;text-decoration:none;font-weight:700}.note{color:#555;font-size:13px}.kicker{font-size:12px;color:#22c55e;font-weight:600}</style></head><body><div class="wrap"><div class="header"><div><span class="badge">Student Deal</span><h1>Lenovo ThinkPad T480</h1><div class="slogan">Power That Lasts • Built for Students & Professionals</div><p class="blurb">The ThinkPad T480 delivers strong performance, business-class durability, and legendary ThinkPad reliability. Perfect for coding, online classes, and everyday multitasking.</p><div class="price-box"><div class="price">BEST PRICE: 530,000/-</div><div class="offer">Free Wireless Mouse 🎁</div></div></div><div class="image"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjy3NAFbJ4SmvHXDwpejjW7Slotuf6ddJVGgz-k9L-R9V1GxJDYUT5rMnb_4AA8zKXxR0hyphenhyphen_sZ_vEtAZKf5C-e-yiNZIenlxz_upTNYEtjYItuwMc5FfIDkCqgaL1F2M5PKRyaAEBqxMj6s_6fX76kRSJ-P6TdBFmAo6RMgVGnXrlTZOlj8mMfWUpvqamM/s320/Lenovo%20ThinkPad%20T480.png" alt="Lenovo ThinkPad T480"></div></div><div class="gallery"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbDzyazTK4ea_93X8VUC-spWfvXePY0X490-RgXzaGksloRRY0qjW9blfC81inkK6geZA0zZP-7b1Y6LACp-7NUYMv9Q48fcj9UfthI2xgk4QXjQj6OadfApDbbqZbwvop3cCs3IIp2KvyLUx1_DvGGXD_gufz7FuZLjglIc7kcaZMR7YywF1i7l5c3RM/s320/IMG-20250824-WA0011-removebg-preview.png" alt="ThinkPad T480 view 1"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhbZB3Ep85VAOu7Rm39ryk8aNvQcu4A2ct4_50BvDr4z31w_03CsY8qsiQwtLhFNBz4U7YGtMc88pTUyH0cM2jTw7r5kML4lz_Ybvd46NnpvDHAlKQEWqihrrnP8bDKQkK-28wjr9QOrWvSo75bK9oNgAHPelu0-rh5ggCFybqjxeVSi1akhIIFLZWvSYI/s320/IMG-20250824-WA0012.jpg" alt="ThinkPad T480 view 2"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgQu1PfGhSc4mGOvFr_IL6pIUj-9e-Ww7kT2oDi0CnfjE1QA5UPQaAeQK-1v1T1Tndr1OsCwQK79bkNRtCgT5UxEtwGn_ndcgidDXiUEvQ1KNko5CuQlfosWyfJ-fT0pm8kCy9LZ9aVD7A5DmAIUifiTzMt8D3qg7laTIAwK9_soFejLATSQUAgo-75_Q0/s320/IMG-20250824-WA0010.jpg" alt="ThinkPad T480 view 3"></div><div class="specs"><div class="spec"><b>CPU</b> Intel Core i5 (8th Gen, Quad-Core)</div><div class="spec"><b>RAM</b> 8GB DDR4 (Upgradeable up to 32GB)</div><div class="spec"><b>Storage</b> 256GB SSD (Upgradeable up to 1TB)</div><div class="spec"><b>Display</b> 14” FHD (1920×1080), Non-Touch</div><div class="spec"><b>Graphics</b> Intel UHD Graphics 620</div><div class="spec"><b>Camera</b> HD Webcam 720p</div><div class="spec"><b>Ports</b> USB 3.0 • USB-C • HDMI • LAN • Dock • Audio Jack • microSD</div><div class="spec"><b>Connectivity</b> Wi-Fi • Bluetooth • Ethernet</div><div class="spec"><b>Battery</b> 3-cell Li-ion, up to 4-5 hrs • RapidCharge</div><div class="spec"><b>Keyboard</b> Spill-resistant • ThinkPad TrackPoint</div><div class="spec"><b>OS</b> Windows 10 Pro (Upgradable to Win 11)</div><div class="spec"><b>Build</b> Durable ThinkPad Design • Strong Hinges</div></div><div class="cta"><div class="kicker">Limited student stock • First come, first served</div><a class="contact-link" href="https://wa.me/255673550040" target="_blank">Contact Seller on WhatsApp</a><div class="note">Need bulk for a class or lab? Ask for a special student discount.</div></div></div></body></html>
+`
+      },
+       {
+        img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi-mibV5Byf7_UFJcvMBUWQwb9flm0DbWRdiXPXSeJD2_EXFKm_L10vRJ_yzYK1kEW1ZO9ABnG6aMNrMOc18UYV2g5uCu42ycWNjxcCyJWPeScaLhapsZ8K8xlm1AqvR7fYvGnu29HL7sb9QkTim7Fjq-Mb058Xm55xzoczOIs5oy889oZRTJN74JdO5B0/s320/Lenovo%20ThinkPad%20T480(1).png",
+        
+       
+        html: `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Dell Latitude 5300 — Student Deal</title><meta name="description" content="Student offer on Dell Latitude 5300 (8th Gen i5) — portable, powerful, and reliable. Best price with free wireless mouse!"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"><style>body{margin:0;font-family:'Poppins',sans-serif;background:#ffffff;color:#111;line-height:1.55}.wrap{max-width:1000px;margin:40px auto;padding:20px}.header{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center;padding:28px 0}@media(max-width:860px){.header{grid-template-columns:1fr}}.badge{display:inline-block;background:#3b82f6;color:white;padding:6px 12px;border-radius:999px;font-weight:600;font-size:12px;margin-bottom:10px}h1{margin:0 0 8px;font-size:clamp(22px,4vw,36px)}.slogan{font-weight:700;color:#16a34a;font-size:clamp(16px,2.2vw,22px);margin-bottom:10px;text-shadow:0 1px 2px rgba(0,0,0,0.08)}.blurb{color:#555;margin-bottom:14px}.price-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px}.price{font-weight:800;font-size:clamp(20px,3vw,28px);color:white;padding:8px 14px;background:linear-gradient(90deg,#3b82f6,#22c55e);border-radius:12px}.offer{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:#f59e0b}.image img{max-width:100%;border-radius:18px}.gallery{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}.gallery img{width:160px;border-radius:10px;border:1px solid #eee}.specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:20px}@media(max-width:720px){.specs{grid-template-columns:1fr}}.spec{padding:12px 14px;border-radius:8px;background:#f9f9f9;border:1px solid #eee}.spec b{display:block;font-size:12px;color:#3b82f6;text-transform:uppercase;margin-bottom:4px}.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:20px;padding-top:10px;border-top:1px dashed #eee}.contact-link{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;background:linear-gradient(90deg,#25d366,#128c7e);color:white;text-decoration:none;font-weight:700}.note{color:#555;font-size:13px}.kicker{font-size:12px;color:#22c55e;font-weight:600}</style></head><body><div class="wrap"><div class="header"><div><span class="badge">Student Deal</span><h1>Dell Latitude 5300</h1><div class="slogan">Portable • Secure • Built for Modern Students</div><p class="blurb">The Latitude 5300 combines business-class security with portability and strong performance. Perfect for online classes, productivity, and professional use.</p><div class="price-box"><div class="price">BEST PRICE: 530,000/-</div><div class="offer">Free Wireless Mouse 🎁</div></div></div><div class="image"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi-mibV5Byf7_UFJcvMBUWQwb9flm0DbWRdiXPXSeJD2_EXFKm_L10vRJ_yzYK1kEW1ZO9ABnG6aMNrMOc18UYV2g5uCu42ycWNjxcCyJWPeScaLhapsZ8K8xlm1AqvR7fYvGnu29HL7sb9QkTim7Fjq-Mb058Xm55xzoczOIs5oy889oZRTJN74JdO5B0/s320/Lenovo%20ThinkPad%20T480(1).png" alt="Dell Latitude 5300"></div></div><div class="gallery"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjjlO0ZJc5-mRX7MmXhlU6LeukAorD_2YSlHvyoP7Ic3mkUZjw2fCY2MMKEhPGfN7Sf1Byd9Deaq0S1z8RpIwD8dZXLbli-zKNglJdEiK0lnlPlZ0aEVGLTXhG1Y0FgdqAuvrlFRhBSTGa33EA61cCoyWBoA1kEYEMKGEpNUs__yAWN3ZBACCd9USetlHE/s320/IMG-20250826-WA0001.jpg" alt="Dell Latitude 5300 view 1"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiTcMkT2JFZEhDJAFyXKb8t3DyTrKnwKTyagB4kmkSy5nSKoQwGOjLSBE4GVb0N8Tn6ePfTRL06S87roib7cducCHi8jiyho_bYdWYxPyNLYmX39FALY08WPv_J_fuoNGSbfSWTtzBPvrtOwican8XjQI07DK0SVbyFdtarylLIwxQdQWwkXDsPCMw3WHU/s320/IMG-20250824-WA0006.jpg" alt="Dell Latitude 5300 view 2"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhIYB4d4X3K7nY32wx46dXEVZFElbYSKU-tpUN9D9fI5cqH4-H_33kwJIm3GeIuHuhgfmAIS5Yhd5B3169O12Xr3n7p5pXWekh90Gwjibrzrbl6vehUZKGDGFrxOos82OUZd6M9pzHUpdQ7S9Qx1AyW5OsPAqAIjDYVTmIBDzZO9YPFclvNa_vXk9_MBfM/s320/IMG-20250824-WA0005.jpg" alt="Dell Latitude 5300 view 3"></div><div class="specs"><div class="spec"><b>CPU</b> Intel Core i5 (8th Gen, Quad-Core)</div><div class="spec"><b>RAM</b> 8GB DDR4 (Upgradeable up to 32GB)</div><div class="spec"><b>Storage</b> 256GB SSD (Upgradeable up to 1TB)</div><div class="spec"><b>Display</b> 14” FHD (1920×1080), Non-Touch</div><div class="spec"><b>Graphics</b> Intel UHD Graphics 620</div><div class="spec"><b>Camera</b> HD Webcam 720p</div><div class="spec"><b>Ports</b> USB 3.1 • USB-C with DisplayPort • HDMI • microSD • LAN • Audio Jack</div><div class="spec"><b>Connectivity</b> Wi-Fi • Bluetooth • Gigabit Ethernet</div><div class="spec"><b>Battery</b> 4-cell Li-ion, up to 4hrs • ExpressCharge</div><div class="spec"><b>Keyboard</b> Spill-resistant • Optional Backlit</div><div class="spec"><b>OS</b> Windows 10 Pro (Upgradable to Windows 11 Pro)</div><div class="spec"><b>Build</b> Lightweight • Durable • Business-class Security</div></div><div class="cta"><div class="kicker">Limited student stock • First come, first served</div><a class="contact-link" href="https://wa.me/255673550040" target="_blank">Contact Seller on WhatsApp</a><div class="note">Need bulk for a class or lab? Ask for a special student discount.</div></div></div></body></html>
+`
+      },
+       {
+        img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjPj1pZ9ySzUv6LiWuvYaKmrergTD3Ts3_bHVPhpbxDbHKPs4pwxPLk_5DeC1YQEchOuMAB7yR_ky2yZTN4YEve3O2dZLG8W6HvCgHnbbvtHIeU_4SlarF1LpUFpljRreGEvsjaFjaX1N6zlVr-aeAIMwVeU5gasbyM6zc1vbecjGdfAtZumi69IYS8A-E/s320/Lenovo%20ThinkPad%20T480(2).png",
+        
+       
+        html: `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>HP EliteBook 820 G3 — Student Deal</title><meta name="description" content="Student offer on HP EliteBook 820 G3 — lightweight, portable, and secure. Best price with free wireless mouse!"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"><style>body{margin:0;font-family:'Poppins',sans-serif;background:#ffffff;color:#111;line-height:1.55}.wrap{max-width:1000px;margin:40px auto;padding:20px}.header{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center;padding:28px 0}@media(max-width:860px){.header{grid-template-columns:1fr}}.badge{display:inline-block;background:#3b82f6;color:white;padding:6px 12px;border-radius:999px;font-weight:600;font-size:12px;margin-bottom:10px}h1{margin:0 0 8px;font-size:clamp(22px,4vw,36px)}.slogan{font-weight:700;color:#9333ea;font-size:clamp(16px,2.2vw,22px);margin-bottom:10px;text-shadow:0 1px 2px rgba(0,0,0,0.08)}.blurb{color:#555;margin-bottom:14px}.price-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px}.price{font-weight:800;font-size:clamp(20px,3vw,28px);color:white;padding:8px 14px;background:linear-gradient(90deg,#3b82f6,#22c55e);border-radius:12px}.offer{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:#f59e0b}.image img{max-width:100%;border-radius:18px}.gallery{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}.gallery img{width:160px;border-radius:10px;border:1px solid #eee}.specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:20px}@media(max-width:720px){.specs{grid-template-columns:1fr}}.spec{padding:12px 14px;border-radius:8px;background:#f9f9f9;border:1px solid #eee}.spec b{display:block;font-size:12px;color:#3b82f6;text-transform:uppercase;margin-bottom:4px}.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:20px;padding-top:10px;border-top:1px dashed #eee}.contact-link{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;background:linear-gradient(90deg,#25d366,#128c7e);color:white;text-decoration:none;font-weight:700}.note{color:#555;font-size:13px}.kicker{font-size:12px;color:#22c55e;font-weight:600}</style></head><body><div class="wrap"><div class="header"><div><span class="badge">Student Deal</span><h1>HP EliteBook 820 G3</h1><div class="slogan">Compact • Secure • Built for Mobility</div><p class="blurb">The HP EliteBook 820 G3 is a slim, lightweight, and durable laptop designed for professionals and students on the go. With solid security and portability, it’s a reliable choice for study and work.</p><div class="price-box"><div class="price">BEST PRICE: 440,000/-</div><div class="offer">Free Wireless Mouse 🎁</div></div></div><div class="image"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjPj1pZ9ySzUv6LiWuvYaKmrergTD3Ts3_bHVPhpbxDbHKPs4pwxPLk_5DeC1YQEchOuMAB7yR_ky2yZTN4YEve3O2dZLG8W6HvCgHnbbvtHIeU_4SlarF1LpUFpljRreGEvsjaFjaX1N6zlVr-aeAIMwVeU5gasbyM6zc1vbecjGdfAtZumi69IYS8A-E/s320/Lenovo%20ThinkPad%20T480(2).png" alt="HP EliteBook 820 G3"></div></div><div class="gallery"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjxijUvaD1gPWPcU2xKhEiCKJHrgzdNo0rY07_PzDzlqmGkG8IBLu2c0kzJG3L0E-2hLqbeBemsIw1dC5cSOBxHHECxDVfohzGtrCxNjxnMo20GbPwxToKHsxE6CHH2UaqeTuCKjGTfLu_srrB0wkiQt6TZZgH2Banu8oGrDPJq0f56JOyn6fgHAhzXFQg/s320/IMG-20250824-WA0003.jpg" alt="HP EliteBook 820 G3 view 1"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgeKLad0swb4BCPeS4pcUjIv-scQIXMpoxQV2PMnTLzOfmgVB_EXpzpM7eK50wKq2HIqsntQh-QLV1GYGchT_X5BB05pPqz8nAm4qKJmUUvqa8JfBeDJsr5G5-_gtRbQ82bOKohnLSUXxxSzNXaBr9SywBTuxScQ2_0Iq9R1erdIG64m_KoeHwqIAphwuc/s320/IMG-20250824-WA0004.jpg" alt="HP EliteBook 820 G3 view 2"></div><div class="specs"><div class="spec"><b>CPU</b> Intel Core i3 (6th Gen, 2 cores/4 threads, 2.3GHz)</div><div class="spec"><b>RAM</b> 8GB DDR4 (Expandable up to 16GB)</div><div class="spec"><b>Storage</b> 256GB SSD (fast boot & performance)</div><div class="spec"><b>Display</b> 12.5″ HD (1366×768), Anti-glare, LED backlit</div><div class="spec"><b>Graphics</b> Intel HD Graphics 520</div><div class="spec"><b>Camera</b> 720p HD Webcam</div><div class="spec"><b>Ports</b> 3× USB 3.0 • 1× USB-C • VGA • DisplayPort • RJ-45 • Audio • Docking</div><div class="spec"><b>Connectivity</b> Wi-Fi • Bluetooth 4.2</div><div class="spec"><b>Battery</b> 3-cell Li-ion, ~4–5 hrs</div><div class="spec"><b>Weight</b> ~1.26 kg (light and portable)</div><div class="spec"><b>Features</b> Fingerprint reader • Spill-resistant keyboard • MIL-STD durability • HP security tools</div></div><div class="cta"><div class="kicker">Limited student stock • First come, first served</div><a class="contact-link" href="https://wa.me/255673550040" target="_blank">Contact Seller on WhatsApp</a><div class="note">Need bulk for a class or lab? Ask for a special student discount.</div></div></div></body></html>
+`
+      }
+    ];
+
+    const slideImage = document.getElementById("slideImage");
+    const slideTitle = document.getElementById("slideTitle");
+    const slideDescription = document.getElementById("slideDescription");
+    const indicatorsContainer = document.getElementById("indicators");
+    const detailView = document.getElementById("detailView");
+    const detailContent = document.getElementById("detailContent");
+    const mainContainer = document.getElementById("mainContainer");
+
+    let currentIndex = 0;
+    let slideInterval;
+
+    // Initialize
+    updateSlide();
+    slides.forEach((_, index) => {
+      const ind = document.createElement("div");
+      ind.classList.add("indicator");
+      if (index === 0) ind.classList.add("active");
+      ind.addEventListener("click", () => {
+        currentIndex = index;
+        updateSlide();
+        resetInterval();
+      });
+      indicatorsContainer.appendChild(ind);
+    });
+
+    function updateSlide() {
+      const s = slides[currentIndex];
+      slideImage.src = s.img;
+      slideTitle.textContent = s.title;
+      slideDescription.textContent = s.description;
+      document.querySelectorAll(".indicator").forEach((dot, i) => {
+        dot.classList.toggle("active", i === currentIndex);
+      });
     }
-  ];
 
-  const slideshowContainer = document.getElementById("slideshow-container");
-  const slideTitle = document.getElementById("slideTitle");
-  const slideDescription = document.getElementById("slideDescription");
-  const indicatorsContainer = document.getElementById("indicators");
-  const detailView = document.getElementById("detailView");
-  const detailContent = document.getElementById("detailContent");
-  const mainContainer = document.getElementById("mainContainer");
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % slides.length;
+      updateSlide();
+    }
 
-  let currentIndex = 0;
-  let slideInterval;
-
-  function createSlides() {
-    slideshowContainer.innerHTML = slides.map(
-      (s, index) =>
-        `<div class="slide ${index === 0 ? "active" : ""}">
-          <img src="${s.img}" alt="${s.title}" onclick="showAdDetail(${index})" />
-        </div>`
-    ).join("");
-  }
-
-  function createIndicators() {
-    indicatorsContainer.innerHTML = slides.map(
-      (_, index) =>
-        `<div class="indicator ${index === 0 ? "active" : ""}" onclick="goToSlide(${index})"></div>`
-    ).join("");
-  }
-
-  function updateContent() {
-    const s = slides[currentIndex];
-    slideTitle.textContent = s.title;
-    slideDescription.textContent = s.description;
-  }
-
-  function updateIndicators() {
-    document.querySelectorAll(".indicator").forEach((dot, i) => {
-      dot.classList.toggle("active", i === currentIndex);
-    });
-  }
-
-  function updateSlides() {
-    document.querySelectorAll(".slide").forEach((slide, i) => {
-      slide.classList.toggle("active", i === currentIndex);
-    });
-  }
-
-  function nextSlide() {
-    currentIndex = (currentIndex + 1) % slides.length;
-    updateSlides();
-    updateContent();
-    updateIndicators();
-  }
-
-  function goToSlide(index) {
-    currentIndex = index;
-    updateSlides();
-    updateContent();
-    updateIndicators();
+    function resetInterval() {
+      clearInterval(slideInterval);
+      slideInterval = setInterval(nextSlide, 5000);
+    }
     resetInterval();
-  }
 
-  function startSlideShow() {
-    slideInterval = setInterval(nextSlide, 5000);
-  }
+    // Show ad detail + push state
+    slideImage.addEventListener("click", () => {
+      mainContainer.style.display = "none";
+      detailView.classList.remove("hidden");
+      detailContent.innerHTML = slides[currentIndex].html;
 
-  function resetInterval() {
-    clearInterval(slideInterval);
-    startSlideShow();
-  }
-
-  function showAdDetail(index) {
-    mainContainer.style.display = "none";
-    detailView.classList.remove("hidden");
-    detailContent.innerHTML = slides[index].html;
-  }
-
-  function closeDetailView() {
-    detailView.classList.add("hidden");
-    mainContainer.style.display = "grid";
-  }
-
-  // Initial setup
-  window.addEventListener("DOMContentLoaded", () => {
-    createSlides();
-    createIndicators();
-    updateContent();
-    startSlideShow();
-  });
+      history.pushState({ page: "ad" }, "", "#ad");
+    });
 
 
       // Handle browser back button
